@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="w-full flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold">Início</h1>
+    
+    <select class="select select-bordered w-full max-w-xs select-sm md:select-md">
+        <option disabled selected>Selecione o Ano/Período</option>
+        <option>2026.1</option>
+        <option>2025.2</option>
+        <option>2025.1</option>
+    </select>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+    <div class="stat bg-base-100 rounded-box shadow-md">
+        <div class="stat-title">Disciplinas</div>
+        <div class="stat-value text-primary">8</div>
+        <div class="stat-desc">Período Selecionado</div>
+    </div>
+    <div class="stat bg-base-100 rounded-box shadow-md">
+        <div class="stat-title">CR (Coeficiente)</div>
+        <div class="stat-value text-secondary">86.2</div>
+        <div class="stat-desc">↑ 2.1 vs semestre passado</div>
+    </div>
+    <div class="stat bg-base-100 rounded-box shadow-md">
+        <div class="stat-title">Situação Geral</div>
+        <div class="stat-value text-success text-3xl">Cursando</div>
+    </div>
+    <div class="stat bg-base-100 rounded-box shadow-md">
+        <div class="stat-title">Frequência Global</div>
+        <div class="stat-value text-info">92%</div>
+        <div class="stat-desc">Acima do mínimo padrão</div>
+    </div>
+</div>
+
+<div class="card bg-base-100 shadow-md">
+    <div class="card-body p-0">
+        <div class="overflow-x-auto">
+            <table class="table table-zebra w-full">
+                <!-- head -->
+                <thead class="bg-base-200">
+                    <tr>
+                        <th>Disciplina</th>
+                        <th>N1</th>
+                        <th>N2</th>
+                        <th>Média</th>
+                        <th>Frequência</th>
+                        <th>Status / Necessidade</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="font-medium">Cálculo I</td>
+                        <td>80</td>
+                        <td>-</td>
+                        <td>80</td>
+                        <td>95%</td>
+                        <td><div class="badge badge-info gap-2">Precisa de 50 na N2</div></td>
+                    </tr>
+                    <tr>
+                        <td class="font-medium">Programação Web</td>
+                        <td>90</td>
+                        <td>95</td>
+                        <td>92.5</td>
+                        <td>100%</td>
+                        <td><div class="badge badge-success gap-2">Aprovado</div></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="card-actions justify-end p-4 border-t border-base-200">
+            <a href="/relatorios" class="btn btn-sm btn-ghost">Ver Relatório Completo</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

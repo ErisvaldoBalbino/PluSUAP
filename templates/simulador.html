@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="mb-6">
+    <h1 class="text-3xl font-bold mb-2">Simulador</h1>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="card bg-base-100 shadow-md">
+        <div class="card-body">
+            <h2 class="card-title text-xl mb-4">Simulação Manual</h2>
+            <form class="flex flex-col gap-4">
+                <div class="form-control w-full">
+                    <label class="label"><span class="label-text font-medium">Nota 1 (N1)</span></label>
+                    <input type="number" placeholder="Sua nota" class="input input-bordered w-full" />
+                </div>
+                
+                <div class="form-control w-full">
+                    <label class="label"><span class="label-text font-medium">Nota 2 (N2) ou Peso</span></label>
+                    <input type="number" placeholder="Sua nota (deixe vazio se não fez)" class="input input-bordered w-full text-base-content/50" disabled />
+                </div>
+
+                <div class="alert alert-info mt-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span>Você precisa de <strong>60</strong> na N2 para passar por média!</span>
+                </div>
+
+                <button class="btn btn-primary mt-4 w-full">Calcular</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

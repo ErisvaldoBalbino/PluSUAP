@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="mb-6">
+    <h1 class="text-3xl font-bold mb-2">Requisitos de Conclusão</h1>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="card bg-base-100 shadow-md">
+        <div class="card-body">
+            <h2 class="card-title">Progresso Integralizado</h2>
+            <div class="flex items-center gap-4 mt-2">
+                <radial-progress class="text-primary" style="--value:70; --size:5rem; --thickness: 0.5rem;">70%</radial-progress>
+                <div>
+                    <p class="text-sm font-bold opacity-70">Total Concluído</p>
+                    <p class="text-xl">2800 / 4000h</p>
+                </div>
+            </div>
+            <progress class="progress progress-primary w-full mt-4" value="70" max="100"></progress>
+        </div>
+    </div>
+
+    <div class="card bg-base-100 shadow-md">
+        <div class="card-body">
+            <h2 class="card-title">Disciplinas Pendentes</h2>
+            
+            <ul class="list-disc ml-5 space-y-2 text-sm mt-4 text-base-content/80">
+                <li><span class="font-medium text-base-content">TCC I</span> - 80h Obrigatórias</li>
+                <li><span class="font-medium text-base-content">TCC II</span> - 80h Obrigatórias</li>
+                <li><span class="font-medium text-warning">Optativas</span> - Faltam 3 turmas (240h)</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
