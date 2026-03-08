@@ -1,40 +1,8 @@
-# Python
 __pycache__/
-*.py[cod]
-*$py.class
-*.so
-
-# Distribution / packaging
-build/
-dist/
-*.egg-info/
-*.egg
-
-# Testing / coverage
-htmlcov/
-.coverage
-.coverage.*
-coverage/
-.pytest_cache/
-
-# Type checking
-.mypy_cache/
-
-# Virtual environments
 .venv
-env/
-venv/
-ENV/
-
-# IDE specific files
 .vscode/
-.idea/
-
-# OS generated files
 .DS_Store
 Thumbs.db
-
-# FastAPI/Project specific
-.env               # environment variables file (contains secrets)
-*.log              # log files
-test.db            # SQLite database file if used for development
+.env
+*.log 
+test.db 
