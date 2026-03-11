@@ -1,5 +1,10 @@
 (function () {
     const grades_body = document.getElementById('grades-body');
+    const grades_footer = document.getElementById('grades-footer');
+    const footer_ch = document.getElementById('footer-ch');
+    const footer_aulas = document.getElementById('footer-aulas');
+    const footer_faltas = document.getElementById('footer-faltas');
+    const footer_freq = document.getElementById('footer-freq');
     const summary_total = document.getElementById('summary-total');
     const summary_approved = document.getElementById('summary-approved');
     const summary_risk = document.getElementById('summary-risk');
@@ -35,31 +40,67 @@
         return `<div class="badge badge-outline gap-2">${escape_html(grade.situacao || '-')}</div>`;
     }
 
+    function render_footer_totals(grades) {
+        if (!grades || grades.length === 0) {
+            grades_footer.classList.add('hidden');
+            return;
+        }
+
+        let total_ch = 0;
+        let total_aulas = 0;
+        let total_faltas = 0;
+
+        grades.forEach((grade) => {
+            total_ch += Number(grade.carga_horaria || 0);
+            total_aulas += Number(grade.carga_horaria_cumprida || 0);
+            total_faltas += Number(grade.numero_faltas || 0);
+        });
+
+        const total_freq = total_aulas > 0
+            ? Math.min(Math.max(Math.round(((total_aulas - total_faltas) / total_aulas) * 100), 0), 100)
+            : 100;
+
+        footer_ch.textContent = `${total_ch} aulas`;
+        footer_aulas.textContent = total_aulas;
+        footer_faltas.textContent = total_faltas;
+        footer_freq.textContent = `${total_freq}%`;
+        grades_footer.classList.remove('hidden');
+    }
+
     function render_grades(grades) {
         if (!grades || grades.length === 0) {
             grades_body.innerHTML = `
                 <tr>
-                    <td colspan="6" class="text-center py-8 text-base-content/50">Nenhuma disciplina cursada neste período.</td>
+                    <td colspan="9" class="text-center py-8 text-base-content/50">Nenhuma disciplina cursada neste período.</td>
                 </tr>
             `;
+            grades_footer.classList.add('hidden');
             return;
         }
 
-        grades_body.innerHTML = grades.map((grade) => `
+        grades_body.innerHTML = grades.map((grade) => {
+            const ch = Number(grade.carga_horaria || 0);
+            const aulas = Number(grade.carga_horaria_cumprida || 0);
+            const faltas = Number(grade.numero_faltas || 0);
+
+            return `
             <tr>
                 <td class="font-medium whitespace-normal min-w-48">${escape_html(grade.disciplina || '-')}</td>
-                <td>${escape_html(grade.n1_limpa ?? '-')}</td>
-                <td>${escape_html(grade.n2_limpa ?? '-')}</td>
-                <td>${escape_html(grade.media_disciplina ?? '-')}</td>
-                <td>
-                    <div class="flex items-center gap-2">
-                        <progress class="progress ${grade.freq_perc >= 75 ? 'progress-success' : 'progress-error'} w-12 xl:w-20" value="${grade.freq_perc}" max="100"></progress>
-                        <span class="text-xs font-semibold">${escape_html(grade.freq_perc)}%</span>
-                    </div>
+                <td class="text-center">${ch > 0 ? `${ch} aulas` : '-'}</td>
+                <td class="text-center">${aulas}</td>
+                <td class="text-center">${faltas}</td>
+                <td class="text-center">
+                    <span class="font-semibold ${grade.freq_perc >= 75 ? 'text-success' : 'text-error'}">${escape_html(grade.freq_perc)}%</span>
                 </td>
+                <td class="text-center">${escape_html(grade.n1_limpa ?? '-')}</td>
+                <td class="text-center">${escape_html(grade.n2_limpa ?? '-')}</td>
+                <td class="text-center">${escape_html(grade.media_disciplina ?? '-')}</td>
                 <td>${render_status_badge(grade)}</td>
             </tr>
-        `).join('');
+        `;
+        }).join('');
+
+        render_footer_totals(grades);
     }
 
     function render_dashboard(data) {
@@ -78,13 +119,17 @@
         student_name.innerHTML = '<span class="skeleton h-8 w-56 inline-block"></span>';
         student_course.innerHTML = '<span class="skeleton h-4 w-72 inline-block"></span>';
 
+        grades_footer.classList.add('hidden');
         grades_body.innerHTML = Array.from({ length: 6 }).map(() => `
             <tr>
                 <td><span class="skeleton h-4 w-52 inline-block"></span></td>
+                <td><span class="skeleton h-4 w-12 inline-block"></span></td>
+                <td><span class="skeleton h-4 w-8 inline-block"></span></td>
+                <td><span class="skeleton h-4 w-8 inline-block"></span></td>
+                <td><span class="skeleton h-4 w-14 inline-block"></span></td>
                 <td><span class="skeleton h-4 w-8 inline-block"></span></td>
                 <td><span class="skeleton h-4 w-8 inline-block"></span></td>
                 <td><span class="skeleton h-4 w-10 inline-block"></span></td>
-                <td><span class="skeleton h-4 w-20 inline-block"></span></td>
                 <td><span class="skeleton h-6 w-full inline-block"></span></td>
             </tr>
         `).join('');
@@ -97,9 +142,10 @@
         summary_risk.textContent = '-';
         student_name.textContent = 'Erro ao carregar';
         student_course.textContent = message || 'Erro inesperado.';
+        grades_footer.classList.add('hidden');
         grades_body.innerHTML = `
             <tr>
-                <td colspan="6" class="text-center py-8 text-error">${safe_message}</td>
+                <td colspan="9" class="text-center py-8 text-error">${safe_message}</td>
             </tr>
         `;
     }
