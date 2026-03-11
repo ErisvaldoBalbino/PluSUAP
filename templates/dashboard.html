@@ -1,15 +1,28 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="w-full flex justify-between items-center mb-6">
+<div class="w-full flex flex-wrap justify-between items-center gap-3 mb-6">
     <h1 class="text-3xl font-bold">Início</h1>
-
-    <select id="period-selector" class="select select-bordered w-full max-w-xs select-sm md:select-md" disabled>
-        <option selected>Carregando períodos...</option>
-    </select>
 </div>
 
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+<div class="card bg-base-100 shadow-md border border-primary/15 mb-6">
+    <div class="card-body py-5">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <div>
+                <p class="text-xs uppercase tracking-wide text-base-content/60 mb-1">Aluno Conectado</p>
+                <h2 id="student-name" class="text-2xl font-bold leading-tight">
+                    <span class="skeleton h-8 w-56 inline-block"></span>
+                </h2>
+                <p id="student-course" class="text-sm text-base-content/70 mt-1">
+                    <span class="skeleton h-4 w-72 inline-block"></span>
+                </p>
+            </div>
+            <div class="badge badge-primary badge-lg">Perfil Acadêmico</div>
+        </div>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
     <div class="stat bg-base-100 rounded-box shadow-md">
         <div class="stat-title">Disciplinas Cursadas</div>
         <div id="summary-total" class="stat-value text-primary">
@@ -30,15 +43,6 @@
             <span class="skeleton h-10 w-12 inline-block"></span>
         </div>
         <div class="stat-desc text-error/80">Necessita de atenção</div>
-    </div>
-    <div class="stat bg-base-100 rounded-box shadow-md">
-        <div class="stat-title">Aluno</div>
-        <div id="student-name" class="stat-value text-base font-bold text-wrap truncate">
-            <span class="skeleton h-8 w-40 inline-block"></span>
-        </div>
-        <div id="student-course" class="stat-desc">
-            <span class="skeleton h-4 w-48 inline-block"></span>
-        </div>
     </div>
 </div>
 

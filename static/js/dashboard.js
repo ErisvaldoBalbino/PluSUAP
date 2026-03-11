@@ -1,5 +1,4 @@
 (function () {
-    const period_selector = document.getElementById('period-selector');
     const grades_body = document.getElementById('grades-body');
     const summary_total = document.getElementById('summary-total');
     const summary_approved = document.getElementById('summary-approved');
@@ -7,7 +6,7 @@
     const student_name = document.getElementById('student-name');
     const student_course = document.getElementById('student-course');
 
-    if (!period_selector || !grades_body) {
+    if (!grades_body) {
         return;
     }
 
@@ -63,29 +62,32 @@
         `).join('');
     }
 
-    function render_periods(periods, selected_ano, selected_periodo) {
-        if (!periods || periods.length === 0) {
-            period_selector.innerHTML = '<option selected>Nenhum período encontrado</option>';
-            period_selector.disabled = true;
-            return;
-        }
-
-        period_selector.innerHTML = periods.map((period) => {
-            const is_selected = String(period.ano_letivo) === String(selected_ano)
-                && String(period.periodo_letivo) === String(selected_periodo);
-            return `<option value="${escape_html(period.ano_letivo)}|${escape_html(period.periodo_letivo)}" ${is_selected ? 'selected' : ''}>${escape_html(period.label)}</option>`;
-        }).join('');
-        period_selector.disabled = false;
-    }
-
     function render_dashboard(data) {
         summary_total.textContent = data.summary?.total_subjects ?? 0;
         summary_approved.textContent = data.summary?.approved_subjects ?? 0;
         summary_risk.textContent = data.summary?.at_risk_subjects ?? 0;
         student_name.textContent = data.user?.nome_usual || data.user?.nome || 'Aluno';
         student_course.textContent = data.user?.curso || 'Curso não informado';
-        render_periods(data.periods, data.selected_ano, data.selected_periodo);
         render_grades(data.grades);
+    }
+
+    function render_loading_state() {
+        summary_total.innerHTML = '<span class="skeleton h-10 w-12 inline-block"></span>';
+        summary_approved.innerHTML = '<span class="skeleton h-10 w-12 inline-block"></span>';
+        summary_risk.innerHTML = '<span class="skeleton h-10 w-12 inline-block"></span>';
+        student_name.innerHTML = '<span class="skeleton h-8 w-56 inline-block"></span>';
+        student_course.innerHTML = '<span class="skeleton h-4 w-72 inline-block"></span>';
+
+        grades_body.innerHTML = Array.from({ length: 6 }).map(() => `
+            <tr>
+                <td><span class="skeleton h-4 w-52 inline-block"></span></td>
+                <td><span class="skeleton h-4 w-8 inline-block"></span></td>
+                <td><span class="skeleton h-4 w-8 inline-block"></span></td>
+                <td><span class="skeleton h-4 w-10 inline-block"></span></td>
+                <td><span class="skeleton h-4 w-20 inline-block"></span></td>
+                <td><span class="skeleton h-6 w-full inline-block"></span></td>
+            </tr>
+        `).join('');
     }
 
     function render_error(message) {
@@ -119,21 +121,32 @@
         render_dashboard(data);
     }
 
-    period_selector.addEventListener('change', async (event) => {
-        const [ano_letivo, periodo_letivo] = event.target.value.split('|');
-        period_selector.disabled = true;
+    function get_selected_period() {
+        const selected = window.plusuapPeriod || {};
+        return {
+            ano_letivo: selected.ano_letivo || '',
+            periodo_letivo: selected.periodo_letivo || '',
+        };
+    }
+
+    window.addEventListener('plusuap:period-changed', async (event) => {
+        const selected = event.detail || get_selected_period();
+        render_loading_state();
         try {
-            await load_dashboard_data(ano_letivo, periodo_letivo);
+            await load_dashboard_data(selected.ano_letivo, selected.periodo_letivo);
         } catch (error) {
             render_error(error.message || 'Erro ao atualizar período.');
-        } finally {
-            period_selector.disabled = false;
         }
     });
 
     window.addEventListener('DOMContentLoaded', async () => {
+        if (window.plusuapPeriodReady && typeof window.plusuapPeriodReady.then === 'function') {
+            await window.plusuapPeriodReady;
+        }
+        const selected = get_selected_period();
+        render_loading_state();
         try {
-            await load_dashboard_data();
+            await load_dashboard_data(selected.ano_letivo, selected.periodo_letivo);
         } catch (error) {
             render_error(error.message || 'Erro inesperado ao carregar os dados.');
         }

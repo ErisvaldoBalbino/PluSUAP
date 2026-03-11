@@ -3,10 +3,7 @@
 {% block content %}
 <div class="flex justify-between items-center mb-6">
     <h1 class="text-3xl font-bold">Relatório</h1>
-    <div class="join">
-        <a href="/exportar/pdf" class="btn btn-outline btn-error join-item border-opacity-50 hover:text-white">PDF</a>
-        <a href="/exportar/csv" class="btn btn-outline btn-success join-item border-opacity-50 hover:text-white">CSV</a>
-    </div>
+    <a href="/exportar/pdf" class="btn btn-outline btn-error border-opacity-50 hover:text-white">Exportar PDF</a>
 </div>
 
 <div class="card bg-base-100 shadow-md">
@@ -22,22 +19,23 @@
                         <th>Situação Final</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="report-grades-body">
+                    {% for _ in range(5) %}
                     <tr>
-                        <td class="font-medium">Cálculo I</td>
-                        <td>
-                            <div class="flex gap-2 text-sm justify-center">
-                                <span class="badge badge-lg">N1: 80</span>
-                                <span class="badge badge-lg badge-outline border-base-content/20">-</span>
-                            </div>
-                        </td>
-                        <td>95% (20/22 aulas)</td>
-                        <td>80h</td>
-                        <td>Em andamento</td>
+                        <td><span class="skeleton h-4 w-56 inline-block"></span></td>
+                        <td><span class="skeleton h-4 w-40 inline-block"></span></td>
+                        <td><span class="skeleton h-4 w-24 inline-block"></span></td>
+                        <td><span class="skeleton h-4 w-14 inline-block"></span></td>
+                        <td><span class="skeleton h-6 w-24 inline-block"></span></td>
                     </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block page_scripts %}
+<script src="/static/js/relatorios.js"></script>
 {% endblock %}

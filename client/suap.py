@@ -11,6 +11,11 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+
+class SUAPAuthError(Exception):
+    """Token SUAP expirado ou inválido (HTTP 401)."""
+    pass
+
 class AsyncSUAPAPI:
     def __init__(self):
         self.client_id = os.getenv('SUAP_CLIENT_ID')
@@ -106,6 +111,9 @@ class AsyncSUAPAPI:
             except httpx.TimeoutException:
                 logger.warning(f"Timeout ao acessar {url}. Tentativa {attempt + 1}")
             except httpx.HTTPStatusError as e:
+                if e.response.status_code == 401:
+                    logger.warning(f"Token expirado/inválido (401) em {url}")
+                    raise SUAPAuthError("Token SUAP expirado ou inválido")
                 logger.error(f"Erro HTTP {e.response.status_code} em {url}")
             except httpx.RequestError as e:
                 logger.error(f"Erro de Conexão em {url}: {e}")
