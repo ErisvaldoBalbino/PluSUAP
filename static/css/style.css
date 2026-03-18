@@ -42,3 +42,60 @@ body { font-family: 'Inter', sans-serif; }
     --rounded-box: 0.8rem;
     --rounded-btn: 0.5rem;
 }
+
+.cal-cell {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+    font-size: 0.8rem;
+    position: relative;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    cursor: default;
+}
+.cal-cell:not(.cal-empty):hover {
+    transform: scale(1.12);
+    z-index: 2;
+    box-shadow: 0 2px 8px oklch(0% 0 0 / 0.15);
+}
+.cal-day-num { position: relative; z-index: 1; font-weight: 500; }
+.cal-empty { opacity: 0; pointer-events: none; }
+.cal-weekend { color: oklch(50% 0 0); }
+
+.cal-today {
+    outline: 2px solid oklch(var(--p));
+    outline-offset: -2px;
+    font-weight: 700;
+}
+
+.cal-feriado     { background: oklch(65% 0.2 25 / 0.22); color: oklch(45% 0.15 25); }
+.cal-facultativo { background: oklch(75% 0.12 60 / 0.22); color: oklch(45% 0.1 60); }
+.cal-prova       { background: oklch(55% 0.18 280 / 0.22); color: oklch(40% 0.15 280); }
+.cal-sabado-letivo { background: oklch(70% 0.15 180 / 0.22); color: oklch(40% 0.12 180); }
+.cal-encontro    { background: oklch(60% 0.16 142 / 0.22); color: oklch(38% 0.12 142); }
+.cal-inicio      { background: oklch(60% 0.16 142 / 0.35); color: oklch(35% 0.14 142); font-weight: 700; }
+.cal-ferias      { background: oklch(80% 0.08 85 / 0.2); color: oklch(50% 0.06 85); }
+
+[data-theme="suap-dark"] .cal-feriado      { color: oklch(80% 0.15 25); }
+[data-theme="suap-dark"] .cal-facultativo  { color: oklch(82% 0.1 60); }
+[data-theme="suap-dark"] .cal-prova        { color: oklch(78% 0.14 280); }
+[data-theme="suap-dark"] .cal-sabado-letivo { color: oklch(80% 0.1 180); }
+[data-theme="suap-dark"] .cal-encontro     { color: oklch(78% 0.12 142); }
+[data-theme="suap-dark"] .cal-inicio       { color: oklch(80% 0.12 142); }
+[data-theme="suap-dark"] .cal-ferias       { color: oklch(78% 0.06 85); }
+[data-theme="suap-dark"] .cal-weekend      { color: oklch(55% 0 0); }
+
+.cal-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.cal-dot.cal-feriado     { background: oklch(55% 0.2 25); }
+.cal-dot.cal-facultativo { background: oklch(65% 0.12 60); }
+.cal-dot.cal-prova       { background: oklch(50% 0.18 280); }
+.cal-dot.cal-sabado-letivo { background: oklch(55% 0.15 180); }
+.cal-dot.cal-encontro    { background: oklch(52% 0.16 142); }
+.cal-dot.cal-inicio      { background: oklch(52% 0.16 142); }
+.cal-dot.cal-ferias      { background: oklch(70% 0.08 85); }

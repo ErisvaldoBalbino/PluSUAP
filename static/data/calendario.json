@@ -1,0 +1,54 @@
+{
+  "instituicao": "IFRN - Campus Pau dos Ferros",
+  "ano_referencia": 2026,
+  "semestres": {
+    "2026.1": {
+      "encontro_pedagogico": ["2026-03-10", "2026-03-11"],
+      "inicio_aulas": "2026-03-12",
+      "provas_finais": ["2026-07-21", "2026-07-22"],
+      "sabados_letivos": [
+        { "data": "2026-03-21", "compensa": "segunda-feira" },
+        { "data": "2026-03-28", "compensa": "quinta-feira" },
+        { "data": "2026-04-11", "compensa": "terça-feira" },
+        { "data": "2026-04-18", "compensa": "sexta-feira" },
+        { "data": "2026-04-25", "compensa": "segunda-feira" }
+      ]
+    },
+    "2026.2": {
+      "encontro_pedagogico": ["2026-08-06", "2026-08-07"],
+      "inicio_aulas": "2026-08-10",
+      "provas_finais": ["2026-12-21", "2026-12-22", "2026-12-23"]
+    }
+  },
+  "ferias_docentes": [
+    { "inicio": "2026-01-05", "fim": "2026-01-16" },
+    { "inicio": "2026-02-19", "fim": "2026-03-09" },
+    { "inicio": "2026-07-23", "fim": "2026-08-05" }
+  ],
+  "feriados_e_recessos": [
+    { "data": "2026-01-01", "nome": "Confraternização Universal", "tipo": "feriado" },
+    { "data": "2026-02-15", "nome": "Carnaval", "tipo": "ponto_facultativo" },
+    { "data": "2026-02-17", "nome": "Carnaval", "tipo": "ponto_facultativo" },
+    { "data": "2026-02-18", "nome": "Quarta-Feira de Cinzas", "tipo": "ponto_facultativo_parcial" },
+    { "data": "2026-04-02", "nome": "Quinta-feira Santa", "tipo": "ponto_facultativo" },
+    { "data": "2026-04-05", "nome": "Sexta-feira Santa", "tipo": "feriado_nacional" },
+    { "data": "2026-04-19", "nome": "Dia dos Povos Indígenas", "tipo": "data_comemorativa" },
+    { "data": "2026-04-20", "nome": "Ponto Facultativo", "tipo": "ponto_facultativo" },
+    { "data": "2026-04-21", "nome": "Tiradentes", "tipo": "feriado_nacional" },
+    { "data": "2026-05-01", "nome": "Dia Mundial do Trabalho", "tipo": "feriado_nacional" },
+    { "data": "2026-06-04", "nome": "Corpus Christi", "tipo": "ponto_facultativo" },
+    { "data": "2026-06-05", "nome": "Ponto Facultativo", "tipo": "ponto_facultativo" },
+    { "data": "2026-09-04", "nome": "Emancipação do município", "tipo": "feriado_municipal" },
+    { "data": "2026-09-07", "nome": "Independência do Brasil", "tipo": "feriado_nacional" },
+    { "data": "2026-10-03", "nome": "Mártires de Cunhaú e Uruaçu", "tipo": "feriado_estadual" },
+    { "data": "2026-10-12", "nome": "Nossa Senhora Aparecida", "tipo": "feriado_nacional" },
+    { "data": "2026-10-28", "nome": "Dia do Servidor Público federal", "tipo": "data_comemorativa" },
+    { "data": "2026-11-02", "nome": "Finados", "tipo": "feriado_nacional" },
+    { "data": "2026-11-15", "nome": "Proclamação da República", "tipo": "feriado_nacional" },
+    { "data": "2026-11-20", "nome": "Dia Nacional de Zumbi e Consciência Negra", "tipo": "feriado_nacional" },
+    { "data": "2026-12-08", "nome": "Padroeira da cidade", "tipo": "feriado_municipal" },
+    { "data": "2026-12-24", "nome": "Véspera do Natal", "tipo": "ponto_facultativo_parcial" },
+    { "data": "2026-12-25", "nome": "Natal", "tipo": "feriado_nacional" },
+    { "data": "2026-12-31", "nome": "Véspera do Ano Novo", "tipo": "ponto_facultativo_parcial" }
+  ]
+}

@@ -93,8 +93,34 @@
 
     </div>
 </div>
+
+<div class="card bg-base-100 shadow-md mt-6">
+    <div class="card-body">
+        <div class="flex items-center gap-2 mb-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <h2 class="card-title text-lg">Calendário Acadêmico 2026</h2>
+        </div>
+        <div class="flex flex-col lg:flex-row gap-6">
+            <div id="calendario-container" class="flex-1 min-w-0">
+                <div class="flex justify-center py-8"><span class="loading loading-spinner loading-md"></span></div>
+            </div>
+            <div class="lg:w-48 flex flex-col gap-1.5 text-xs lg:pt-12">
+                <div class="flex items-center gap-2"><span class="cal-dot cal-feriado"></span> Feriado</div>
+                <div class="flex items-center gap-2"><span class="cal-dot cal-facultativo"></span> Ponto Facultativo</div>
+                <div class="flex items-center gap-2"><span class="cal-dot cal-prova"></span> Prova Final</div>
+                <div class="flex items-center gap-2"><span class="cal-dot cal-sabado-letivo"></span> Sábado Letivo</div>
+                <div class="flex items-center gap-2"><span class="cal-dot cal-encontro"></span> Enc. Pedagógico</div>
+                <div class="flex items-center gap-2"><span class="cal-dot cal-inicio"></span> Início das Aulas</div>
+                <div class="flex items-center gap-2"><span class="cal-dot cal-ferias"></span> Férias Docentes</div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block page_scripts %}
 <script src="/static/js/dashboard.js"></script>
+<script src="/static/js/calendario.js"></script>
 {% endblock %}
