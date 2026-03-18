@@ -212,4 +212,18 @@ class AsyncSUAPAPI:
         async with httpx.AsyncClient(headers=headers) as client:
             return await self._make_request(client, 'GET', self.completion_requirements_url)
 
+    async def get_disciplinas(self, token: str, semestre: str) -> Optional[List[Dict[str, Any]]]:
+        headers = {"Authorization": f"Bearer {token}"}
+        url = f"{self.api_url}ensino/disciplinas/{semestre}/"
+        async with httpx.AsyncClient(headers=headers) as client:
+            data = await self._make_request(client, 'GET', url)
+            return self._extract_results(data)
+
+    async def get_disciplina_etapas(self, token: str, disciplina_id: int) -> Optional[List[Dict[str, Any]]]:
+        headers = {"Authorization": f"Bearer {token}"}
+        url = f"{self.api_url}ensino/disciplinas/{disciplina_id}/etapas/"
+        async with httpx.AsyncClient(headers=headers) as client:
+            data = await self._make_request(client, 'GET', url)
+            return self._extract_results(data)
+
 suap_api = AsyncSUAPAPI()

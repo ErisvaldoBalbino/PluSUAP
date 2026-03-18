@@ -165,40 +165,6 @@ async def select_period(request: Request, ano_letivo: str, periodo_letivo: str):
     save_selected_period(request, ano_letivo, periodo_letivo)
     return {"ok": True}
 
-@app.get("/api/report-data")
-async def report_data(request: Request, ano_letivo: str = None, periodo_letivo: str = None):
-    token = get_token(request)
-    if not token:
-        return JSONResponse({"detail": "Não autenticado"}, status_code=401)
-
-    selected_ano, selected_periodo = get_selected_period(request)
-    ano_letivo = ano_letivo or selected_ano
-    periodo_letivo = periodo_letivo or selected_periodo
-
-    raw_data = await suap_api.get_dashboard_data(token, ano_letivo, periodo_letivo)
-    raw_grades = raw_data.get("grades", [])
-    processed_grades = process_grades_data(raw_grades)
-    periods = normalize_periods(raw_data.get("periods", []))
-
-    final_selected_ano = raw_data.get("selected_ano")
-    final_selected_periodo = raw_data.get("selected_periodo")
-    if final_selected_ano and final_selected_periodo:
-        save_selected_period(request, final_selected_ano, final_selected_periodo)
-
-    return {
-        "grades": processed_grades,
-        "periods": periods,
-        "selected_ano": final_selected_ano,
-        "selected_periodo": final_selected_periodo,
-    }
-
-@app.get("/relatorios", response_class=HTMLResponse)
-async def page_relatorios(request: Request):
-    if not get_token(request):
-        return RedirectResponse("/login")
-        
-    return templates.TemplateResponse("relatorios.html", {"request": request, "title": "Relatório"})
-
 @app.get("/simulador", response_class=HTMLResponse)
 async def page_simulador(request: Request):
     if not get_token(request):
@@ -213,12 +179,43 @@ async def page_requisitos(request: Request):
         
     return templates.TemplateResponse("requisitos.html", {"request": request, "title": "Requisitos de Conclusão"})
 
-@app.get("/exportar/{formato}")
-async def exportar_dados(request: Request, formato: str):
+@app.get("/api/requisitos")
+async def api_requisitos(request: Request):
+    token = get_token(request)
+    if not token:
+        return JSONResponse({"detail": "Não autenticado"}, status_code=401)
+
+    data = await suap_api.get_completion_requirements(token)
+    return data or {}
+
+@app.get("/disciplinas", response_class=HTMLResponse)
+async def page_disciplinas(request: Request):
     if not get_token(request):
         return RedirectResponse("/login")
+    return templates.TemplateResponse("disciplinas.html", {"request": request, "title": "Minhas Disciplinas"})
 
-    if formato.lower() != "pdf":
-        return JSONResponse({"detail": "Formato não suportado. Use apenas PDF."}, status_code=400)
+@app.get("/api/disciplinas")
+async def api_disciplinas(request: Request, ano_letivo: str = None, periodo_letivo: str = None):
+    token = get_token(request)
+    if not token:
+        return JSONResponse({"detail": "Não autenticado"}, status_code=401)
 
-    return {"status": "Exportação em PDF será disponibilizada em breve."}
+    selected_ano, selected_periodo = get_selected_period(request)
+    ano = ano_letivo or selected_ano
+    periodo = periodo_letivo or selected_periodo
+
+    if not (ano and periodo):
+        return JSONResponse({"detail": "Nenhum período selecionado"}, status_code=400)
+
+    semestre = f"{ano}.{periodo}"
+    disciplinas = await suap_api.get_disciplinas(token, semestre)
+    return {"disciplinas": disciplinas or []}
+
+@app.get("/api/disciplinas/{disciplina_id}/etapas")
+async def api_disciplina_etapas(request: Request, disciplina_id: int):
+    token = get_token(request)
+    if not token:
+        return JSONResponse({"detail": "Não autenticado"}, status_code=401)
+
+    etapas = await suap_api.get_disciplina_etapas(token, disciplina_id)
+    return {"etapas": etapas or []}
