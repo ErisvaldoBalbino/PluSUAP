@@ -20,7 +20,7 @@ class AsyncSUAPAPI:
     def __init__(self):
         self.client_id = os.getenv('SUAP_CLIENT_ID')
         self.client_secret = os.getenv('SUAP_CLIENT_SECRET')
-        self.redirect_uri = os.getenv('SUAP_REDIRECT_URI', 'http://127.0.0.1:8000/oauth/callback')
+        self.redirect_uri = os.getenv('SUAP_REDIRECT_URI')
         
         self.authorization_url = 'https://suap.ifrn.edu.br/o/authorize/'
         self.access_token_url = 'https://suap.ifrn.edu.br/o/token/'
