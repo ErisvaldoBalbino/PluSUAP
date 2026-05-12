@@ -2,8 +2,24 @@ services:
   web:
     build: .
     container_name: plusuap_web
-    ports:
-      - "8000:8000"
     env_file:
       - .env
     restart: unless-stopped
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: plusuap_caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    env_file:
+      - .env
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  caddy_data:
+  caddy_config:
