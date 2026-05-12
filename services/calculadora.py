@@ -46,12 +46,16 @@ def process_grades_data(grades_data: List[Dict[str, Any]]) -> List[Dict[str, Any
         c_grade['alerta'] = alerta
         
         carga = grade.get('carga_horaria', 0)
+        aulas_cumpridas = grade.get('carga_horaria_cumprida', 0)
         faltas = grade.get('numero_faltas', 0)
-        max_faltas = carga * 0.25 if carga else 0
-        freq_percent = 100 - ((faltas / (carga if carga else 1)) * 100)
+        
+        if aulas_cumpridas:
+            freq_percent = 100 - ((faltas / aulas_cumpridas) * 100)
+        else:
+            freq_percent = 100
         
         c_grade['freq_perc'] = min(max(round(freq_percent), 0), 100)
-        if c_grade['freq_perc'] < 75 and situacao == 'Cursando':
+        if c_grade['freq_perc'] < 75 and situacao == 'Cursando' and aulas_cumpridas >= carga:
             c_grade['estado_ui'] = "FALHA"
             c_grade['alerta'] = "Reprovado por Falta!"
             
