@@ -7,7 +7,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from dotenv import load_dotenv
 
 from client.suap import suap_api, SUAPAuthError
-from services.calculadora import process_grades_data, calculate_summary
+from services.calculadora import process_grades_data, calculate_summary, process_diarios_faltas
 
 load_dotenv()
 
@@ -219,3 +219,34 @@ async def api_disciplina_etapas(request: Request, disciplina_id: int):
 
     etapas = await suap_api.get_disciplina_etapas(token, disciplina_id)
     return {"etapas": etapas or []}
+
+@app.get("/faltas", response_class=HTMLResponse)
+async def page_faltas(request: Request):
+    if not get_token(request):
+        return RedirectResponse("/login")
+    return templates.TemplateResponse("faltas.html", {"request": request, "title": "Controle de Faltas"})
+
+@app.get("/api/diarios")
+async def api_diarios(request: Request, ano_letivo: str = None, periodo_letivo: str = None):
+    token = get_token(request)
+    if not token:
+        return JSONResponse({"detail": "Não autenticado"}, status_code=401)
+
+    selected_ano, selected_periodo = get_selected_period(request)
+    ano = ano_letivo or selected_ano
+    periodo = periodo_letivo or selected_periodo
+
+    if not (ano and periodo):
+        return JSONResponse({"detail": "Nenhum período selecionado"}, status_code=400)
+
+    semestre = f"{ano}.{periodo}"
+    
+    import asyncio
+    diarios_task = asyncio.create_task(suap_api.get_diarios(token, semestre))
+    grades_task = asyncio.create_task(suap_api.get_user_grades(token, ano, periodo))
+    
+    diarios_raw, grades_raw = await asyncio.gather(diarios_task, grades_task)
+    
+    processed = process_diarios_faltas(diarios_raw or [], grades_raw or [])
+    return processed
+

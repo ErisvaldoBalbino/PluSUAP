@@ -226,4 +226,11 @@ class AsyncSUAPAPI:
             data = await self._make_request(client, 'GET', url)
             return self._extract_results(data)
 
+    async def get_diarios(self, token: str, semestre: str) -> Optional[List[Dict[str, Any]]]:
+        headers = {"Authorization": f"Bearer {token}"}
+        url = f"{self.api_url}ensino/diarios/{semestre}/"
+        async with httpx.AsyncClient(headers=headers) as client:
+            data = await self._make_request(client, 'GET', url)
+            return self._extract_results(data)
+
 suap_api = AsyncSUAPAPI()

@@ -55,9 +55,6 @@ def process_grades_data(grades_data: List[Dict[str, Any]]) -> List[Dict[str, Any
             freq_percent = 100
         
         c_grade['freq_perc'] = min(max(round(freq_percent), 0), 100)
-        if c_grade['freq_perc'] < 75 and situacao == 'Cursando' and aulas_cumpridas >= carga:
-            c_grade['estado_ui'] = "FALHA"
-            c_grade['alerta'] = "Reprovado por Falta!"
             
         processed_grades.append(c_grade)
         
@@ -80,4 +77,92 @@ def calculate_summary(grades_data: List[Dict[str, Any]]) -> Dict[str, Any]:
         'total_subjects': total,
         'approved_subjects': approved,
         'at_risk_subjects': at_risk
+    }
+
+def process_diarios_faltas(diarios_data: List[Dict[str, Any]], grades_data: List[Dict[str, Any]] = None) -> Dict[str, Any]:
+    if not diarios_data:
+        return {"summary": {}, "dias_semana": {}, "diarios": []}
+
+    grades_data = grades_data or []
+    processed = []
+    
+    global_ch_total = 0
+    global_faltas = 0
+    global_dias_aulas = {}
+    
+    for diario in diarios_data:
+        disciplina = diario.get('disciplina', {})
+        descricao = disciplina.get('descricao', 'Desconhecida')
+        sigla = disciplina.get('sigla', '')
+        
+        ch_total_aula = disciplina.get('ch_total_aula', 0)
+        qtd_faltas = disciplina.get('qtd_faltas', 0)
+        
+        matching_grade = None
+        for grade in grades_data:
+            grade_disc = str(grade.get('disciplina', ''))
+            if (sigla and sigla in grade_disc) or (descricao and descricao.lower() in grade_disc.lower()):
+                matching_grade = grade
+                break
+                
+        if matching_grade:
+            ch_total_aula = matching_grade.get('carga_horaria', ch_total_aula)
+            qtd_faltas = matching_grade.get('numero_faltas', qtd_faltas)
+            
+        try:
+            ch_total_aula = int(ch_total_aula)
+        except (ValueError, TypeError):
+            ch_total_aula = 0
+            
+        try:
+            qtd_faltas = int(qtd_faltas)
+        except (ValueError, TypeError):
+            qtd_faltas = 0
+
+        global_ch_total += ch_total_aula
+        global_faltas += qtd_faltas
+        
+        limite_faltas = int(ch_total_aula * 0.25)
+        faltas_restantes = max(0, limite_faltas - qtd_faltas)
+        
+        horarios = diario.get('horarios', [])
+        dias_aulas = {}
+        for h in horarios:
+            dia = h.get('dia')
+            if dia:
+                dias_aulas[dia] = dias_aulas.get(dia, 0) + 1
+                global_dias_aulas[dia] = global_dias_aulas.get(dia, 0) + 1
+                
+        processed.append({
+            'id': diario.get('id'),
+            'descricao': descricao,
+            'sigla': sigla,
+            'ch_total_aula': ch_total_aula,
+            'qtd_faltas': qtd_faltas,
+            'limite_faltas': limite_faltas,
+            'faltas_restantes': faltas_restantes,
+            'horarios_agrupados': dias_aulas
+        })
+        
+    global_limite = int(global_ch_total * 0.25)
+    global_restantes = max(0, global_limite - global_faltas)
+    
+    # Calculate how many times they can miss each specific day of the week
+    dias_semana_faltas = {}
+    for dia, qtd in global_dias_aulas.items():
+        if qtd > 0:
+            dias_semana_faltas[dia] = {
+                "aulas_no_dia": qtd,
+                "pode_faltar_vezes": global_restantes // qtd
+            }
+
+    return {
+        "summary": {
+            "ch_total": global_ch_total,
+            "faltas": global_faltas,
+            "limite_faltas": global_limite,
+            "faltas_restantes": global_restantes
+        },
+        "dias_semana": dias_semana_faltas,
+        "diarios": processed
     }

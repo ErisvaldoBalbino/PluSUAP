@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="w-full flex flex-wrap justify-between items-center gap-3 mb-6">
+    <h1 class="text-3xl font-bold">Controle de Faltas</h1>
+    <p class="text-base-content/70">Acompanhe quantas vezes você ainda pode faltar em cada dia da semana.</p>
+</div>
+
+<div id="faltas-loading">
+    <div class="skeleton h-32 w-full mb-6"></div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {% for _ in range(4) %}
+        <div class="card bg-base-100 shadow-md">
+            <div class="card-body">
+                <span class="skeleton h-6 w-3/4 inline-block"></span>
+                <span class="skeleton h-4 w-1/2 inline-block mt-2"></span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div id="faltas-empty" class="hidden text-center py-10 bg-base-100 rounded-lg shadow-sm border border-base-200">
+    <div class="text-4xl mb-4">📭</div>
+    <h3 class="text-lg font-semibold">Nenhuma disciplina encontrada</h3>
+    <p class="text-base-content/60">Não foi possível carregar as faltas para o período selecionado.</p>
+</div>
+
+<div id="faltas-content" class="hidden">
+    <!-- Card de Resumo Global -->
+    <div class="card bg-primary text-primary-content shadow-xl mb-8">
+        <div class="card-body p-6">
+            <h2 class="card-title text-2xl mb-4 border-b border-primary-content/20 pb-2">Panorama do Semestre</h2>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div class="bg-primary-content/10 rounded-lg p-3 text-center">
+                    <div class="text-primary-content/70 text-xs uppercase font-bold mb-1">Carga Horária Total</div>
+                    <div class="text-2xl font-bold" id="global-ch">0</div>
+                </div>
+                <div class="bg-primary-content/10 rounded-lg p-3 text-center">
+                    <div class="text-primary-content/70 text-xs uppercase font-bold mb-1">Limite Global</div>
+                    <div class="text-2xl font-bold" id="global-limite">0</div>
+                </div>
+                <div class="bg-primary-content/10 rounded-lg p-3 text-center">
+                    <div class="text-primary-content/70 text-xs uppercase font-bold mb-1">Suas Faltas</div>
+                    <div class="text-2xl font-bold" id="global-faltas">0</div>
+                </div>
+                <div class="bg-primary-content/10 rounded-lg p-3 text-center">
+                    <div class="text-primary-content/70 text-xs uppercase font-bold mb-1">Faltas Restantes</div>
+                    <div class="text-2xl font-bold" id="global-restantes">0</div>
+                </div>
+            </div>
+
+            <h3 class="font-semibold text-lg mb-3">Quantas vezes você ainda pode faltar em cada dia:</h3>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3" id="global-dias">
+                <!-- Preenchido via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de Disciplinas -->
+    <h2 class="text-xl font-bold mb-4">Detalhamento por Disciplina</h2>
+    <div id="faltas-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Renderizado via JS -->
+    </div>
+</div>
+{% endblock %}
+
+{% block page_scripts %}
+<script src="/static/js/faltas.js"></script>
+{% endblock %}
