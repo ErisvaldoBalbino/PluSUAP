@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-theme="suap">
+<html lang="pt-BR" data-theme="plus">
 
 <head>
     <script src="/static/js/theme.js"></script>
@@ -12,25 +12,96 @@
 </head>
 
 <body class="bg-base-200 overflow-x-hidden">
-    <div class="drawer lg:drawer-open min-h-screen lg:h-screen">
-        <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
-        <div class="drawer-content flex flex-col min-h-screen lg:min-h-0 lg:h-screen">
-            <div class="navbar bg-base-100 w-full lg:hidden border-b border-base-200">
-                <div class="flex-none">
-                    <label for="my-drawer-2" aria-label="open sidebar" class="btn btn-square btn-ghost">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                            class="inline-block w-6 h-6 stroke-current">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 6h16M4 12h16M4 18h16"></path>
-                        </svg>
-                    </label>
+    <div class="flex h-screen overflow-hidden">
+        <aside id="sidebar" class="flex-shrink-0 overflow-hidden border-r border-base-200 bg-base-100 flex flex-col">
+            <div class="sidebar-brand shrink-0">
+                <div class="sidebar-logo">P</div>
+                <div>
+                    <div class="font-bold text-lg leading-tight">PluSUAP</div>
                 </div>
-                <div class="flex-1 px-2 mx-2 font-bold text-xl">PluSUAP</div>
             </div>
 
-            <div class="sticky top-0 z-20 border-b border-base-300/60 bg-base-200/90 backdrop-blur">
-                <div class="px-4 md:px-8 py-3 flex justify-start">
-                    <select id="period-selector" class="select select-bordered w-full max-w-xs select-sm md:select-md"
+            <ul class="menu p-0 flex-1 overflow-y-auto min-h-0">
+                <li class="nav-link {% if request.url.path == '/' %}nav-link-active{% endif %}">
+                    <a href="/">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955a1.126 1.126 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                        </svg>
+                        Início
+                    </a>
+                </li>
+                <li class="nav-link {% if request.url.path == '/disciplinas' %}nav-link-active{% endif %}">
+                    <a href="/disciplinas">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                        </svg>
+                        Minhas Disciplinas
+                    </a>
+                </li>
+                <li class="nav-link {% if request.url.path == '/simulador' %}nav-link-active{% endif %}">
+                    <a href="/simulador">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5m.75-9l3-3 2.148 2.148A12.061 12.061 0 0116.5 7.605" />
+                        </svg>
+                        Simulador
+                    </a>
+                </li>
+                <li class="nav-link {% if request.url.path == '/requisitos' %}nav-link-active{% endif %}">
+                    <a href="/requisitos">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Requisitos de Conclusão
+                    </a>
+                </li>
+                <li class="nav-link {% if request.url.path == '/faltas' %}nav-link-active{% endif %}">
+                    <a href="/faltas">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
+                        </svg>
+                        Controle de Faltas
+                    </a>
+                </li>
+            </ul>
+
+            <div class="border-t border-base-200 px-4 py-4 shrink-0">
+                <label class="flex items-center justify-between cursor-pointer gap-3 px-2 py-1.5 rounded-lg hover:bg-base-200 transition">
+                    <span class="flex items-center gap-2 text-sm font-medium">
+                        <svg class="w-4 h-4 fill-current text-base-content/60" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/>
+                        </svg>
+                        Tema escuro
+                    </span>
+                    <input type="checkbox" id="themeToggle" class="toggle toggle-sm toggle-primary" />
+                </label>
+            </div>
+
+            <div class="border-t border-base-200 shrink-0">
+                <a href="/logout" class="flex items-center gap-3 px-6 py-3 text-sm font-medium text-base-content/60 hover:text-error transition hover:bg-base-200 rounded-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+                    </svg>
+                    Sair
+                </a>
+            </div>
+        </aside>
+
+        <div id="sidebar-backdrop"></div>
+
+        <div class="flex-1 flex flex-col min-w-0">
+            <div class="sticky top-0 z-20 border-b border-base-300/50 bg-base-200/80 backdrop-blur-md">
+                <div class="px-4 md:px-8 py-2.5 flex items-center gap-3">
+                    <button data-toggle-sidebar aria-label="toggle sidebar" class="btn btn-square btn-ghost btn-sm shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            class="inline-block w-4 h-4 stroke-current">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"></path>
+                        </svg>
+                    </button>
+                    <span class="text-xs font-semibold uppercase tracking-wider text-base-content/50 hidden sm:inline">
+                        Período
+                    </span>
+                    <select id="period-selector" class="select select-bordered w-full max-w-xs select-sm sm:select-md"
                         disabled>
                         <option selected>Carregando períodos...</option>
                     </select>
@@ -38,81 +109,45 @@
             </div>
 
             <main class="p-4 md:p-8 flex-1 min-h-0 overflow-y-auto overflow-x-hidden">
-                {% block content %}{% endblock %}
+                <div class="max-w-7xl mx-auto">
+                    {% block content %}{% endblock %}
+                </div>
             </main>
         </div>
-
-        <div class="drawer-side h-screen" style="z-index: 9999;">
-            <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>
-            <ul class="menu p-4 w-72 min-h-full bg-base-100 text-base-content flex flex-col pt-8 overflow-y-auto">
-                <div class="text-2xl font-bold px-4 mb-6 hover:opacity-80 transition cursor-pointer text-primary">
-                    PluSUAP</div>
-
-                <li><a href="/" class="mb-2 {% if request.url.path == '/' %}active{% endif %}">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 opacity-70" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                        </svg>
-                        Início
-                    </a></li>
-                <li><a href="/disciplinas" class="mb-2 {% if request.url.path == '/disciplinas' %}active{% endif %}">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 opacity-70" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                        </svg>
-                        Minhas Disciplinas
-                    </a></li>
-                <li><a href="/simulador" class="mb-2 {% if request.url.path == '/simulador' %}active{% endif %}">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 opacity-70" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                        </svg>
-                        Simulador
-                    </a></li>
-                <li><a href="/requisitos" class="mb-2 {% if request.url.path == '/requisitos' %}active{% endif %}">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 opacity-70" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                        </svg>
-                        Requisitos de Conclusão
-                    </a></li>
-                <li><a href="/faltas" class="mb-2 {% if request.url.path == '/faltas' %}active{% endif %}">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 opacity-70" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                        Controle de Faltas
-                    </a></li>
-
-                <div class="mt-auto"></div>
-
-                <li class="px-2 mb-2 mt-4">
-                    <label class="swap swap-rotate justify-start gap-4">
-                        <input type="checkbox" id="themeToggle" />
-                        <svg class="swap-off fill-current w-5 h-5" xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24">
-                            <path
-                                d="M5.64,17l-.71.71a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71A1,1,0,0,0,5.64,17ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm7-7a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41l-.71-.71A1,1,0,0,0,4.93,6.34Zm12,.29a1,1,0,0,0,.7-.29l.71-.71a1,1,0,1,0-1.41-1.41L17,5.64a1,1,0,0,0,0,1.41A1,1,0,0,0,17.66,7.34ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-9,8a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19ZM18.36,17A1,1,0,0,0,17,18.36l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM12,6.5A5.5,5.5,0,1,0,17.5,12,5.51,5.51,0,0,0,12,6.5Zm0,9A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z" />
-                        </svg>
-                        <svg class="swap-on fill-current w-5 h-5" xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24">
-                            <path
-                                d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z" />
-                        </svg>
-                        Mudar Tema
-                    </label>
-                </li>
-
-                <div class="divider mt-0 mb-2"></div>
-                <li><a href="/logout" class="text-error font-medium">Sair</a></li>
-            </ul>
-        </div>
     </div>
+
+    <script>
+        document.querySelectorAll('[data-toggle-sidebar]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var sidebar = document.getElementById('sidebar');
+                var backdrop = document.getElementById('sidebar-backdrop');
+                sidebar.classList.toggle('sidebar-closed');
+                if (window.innerWidth < 1024 && backdrop) {
+                    backdrop.classList.toggle('visible');
+                }
+            });
+        });
+
+        document.addEventListener('click', function (e) {
+            if (window.innerWidth >= 1024) return;
+            var sidebar = document.getElementById('sidebar');
+            var backdrop = document.getElementById('sidebar-backdrop');
+            if (!backdrop || !backdrop.classList.contains('visible')) return;
+            if (!sidebar.contains(e.target) && !e.target.closest('[data-toggle-sidebar]')) {
+                sidebar.classList.add('sidebar-closed');
+                backdrop.classList.remove('visible');
+            }
+        });
+
+        (function init() {
+            var sidebar = document.getElementById('sidebar');
+            if (window.innerWidth >= 1024) {
+                sidebar.classList.remove('sidebar-closed');
+            } else {
+                sidebar.classList.add('sidebar-closed');
+            }
+        })();
+    </script>
 
     <script src="/static/js/auth.js"></script>
     <script src="/static/js/period-selector.js"></script>

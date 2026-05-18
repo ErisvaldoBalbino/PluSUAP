@@ -2,19 +2,20 @@
 
 {% block content %}
 <div class="mb-6">
-    <h1 class="text-3xl font-bold mb-2">Requisitos de Conclusão</h1>
+    <h1 class="page-heading">Requisitos de Conclusão</h1>
+    <p class="page-subtitle">Acompanhe seu progresso rumo à conclusão do curso</p>
 </div>
 
-<div class="card bg-base-100 shadow-md mb-6">
+<div class="card card-elevated bg-base-100 mb-6">
     <div class="card-body">
-        <h2 class="card-title">Progresso Geral</h2>
-        <div class="flex items-center gap-4 mt-2">
-            <div id="progress-radial" class="radial-progress text-primary" style="--value:0; --size:5rem; --thickness:0.5rem;" role="progressbar">
-                <span id="progress-percent">-</span>
+        <h2 class="card-title text-lg font-semibold mb-4">Progresso Geral</h2>
+        <div class="flex items-center gap-6">
+            <div id="progress-radial" class="radial-progress text-primary shrink-0" style="--value:0; --size:5rem; --thickness:0.5rem;" role="progressbar">
+                <span id="progress-percent" class="text-sm font-bold">-</span>
             </div>
-            <div>
-                <p class="text-sm font-bold opacity-70">Total Integralizado</p>
-                <p id="progress-totals" class="text-xl">
+            <div class="min-w-0">
+                <p class="text-sm font-semibold text-base-content/60">Total Integralizado</p>
+                <p id="progress-totals" class="text-xl font-bold mt-0.5">
                     <span class="skeleton h-6 w-40 inline-block"></span>
                 </p>
             </div>
@@ -25,7 +26,7 @@
 
 <div id="requisitos-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
     {% for _ in range(4) %}
-    <div class="card bg-base-100 shadow-md">
+    <div class="card card-bordered bg-base-100">
         <div class="card-body py-4">
             <span class="skeleton h-5 w-2/3 inline-block"></span>
             <span class="skeleton h-3 w-full inline-block mt-3"></span>

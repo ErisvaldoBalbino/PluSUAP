@@ -26,18 +26,18 @@
 
     function render_status_badge(grade) {
         if (grade.estado_ui === 'BOM') {
-            return `<div class="badge badge-info gap-2 text-xs py-3 w-full">${escape_html(grade.alerta || '-')}</div>`;
+            return `<div class="badge badge-info badge-sm font-medium">${escape_html(grade.alerta || '-')}</div>`;
         }
         if (grade.estado_ui === 'PERIGO') {
-            return `<div class="badge badge-warning gap-2 text-xs py-3 w-full font-semibold">${escape_html(grade.alerta || '-')}</div>`;
+            return `<div class="badge badge-warning badge-sm font-semibold">${escape_html(grade.alerta || '-')}</div>`;
         }
         if (grade.estado_ui === 'SUCESSO') {
-            return '<div class="badge badge-success gap-2 py-3 w-full font-bold text-white">APROVADO</div>';
+            return '<div class="badge badge-success badge-sm font-bold text-white">APROVADO</div>';
         }
         if (grade.estado_ui === 'FALHA') {
-            return `<div class="badge badge-error gap-2 text-xs py-3 w-full font-bold text-white">${escape_html(grade.alerta || 'REPROVADO')}</div>`;
+            return `<div class="badge badge-error badge-sm font-bold text-white">${escape_html(grade.alerta || 'REPROVADO')}</div>`;
         }
-        return `<div class="badge badge-outline gap-2">${escape_html(grade.situacao || '-')}</div>`;
+        return `<div class="badge badge-outline badge-sm">${escape_html(grade.situacao || '-')}</div>`;
     }
 
     function render_footer_totals(grades) {
@@ -107,7 +107,7 @@
         summary_total.textContent = data.summary?.total_subjects ?? 0;
         summary_approved.textContent = data.summary?.approved_subjects ?? 0;
         summary_risk.textContent = data.summary?.at_risk_subjects ?? 0;
-        student_name.textContent = data.user?.nome_usual || data.user?.nome || 'Aluno';
+        student_name.textContent = data.user?.nome_registro || data.user?.nome_social || 'Aluno';
         student_course.textContent = data.user?.curso || 'Curso não informado';
         render_grades(data.grades);
     }

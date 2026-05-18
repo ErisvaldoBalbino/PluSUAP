@@ -2,13 +2,15 @@
 
 {% block content %}
 <div class="mb-6">
-    <h1 class="text-3xl font-bold mb-2">Simulador</h1>
+    <h1 class="page-heading">Simulador</h1>
+    <p class="page-subtitle">Simule notas e frequência para prever seu desempenho</p>
 </div>
 
 <div class="grid grid-cols-1 xl:grid-cols-[1.2fr_1fr] gap-6 items-start">
-    <div class="card bg-base-100 shadow-md border border-base-300/60">
+    <div class="card card-bordered bg-base-100">
         <div class="card-body">
-            <h2 class="card-title text-xl mb-2">Simulação Manual</h2>
+            <h2 class="card-title text-xl font-semibold mb-1">Simulação Manual</h2>
+            <p class="text-sm text-base-content/50 mb-4">Preencha os campos para simular seu resultado</p>
 
             <div id="simuladorFormLoading" class="space-y-4 hidden mb-3">
                 <span class="skeleton h-10 w-full block"></span>
@@ -18,50 +20,65 @@
                 <span class="skeleton h-10 w-full block"></span>
             </div>
 
-            <form id="simulador-form" class="flex flex-col gap-4">
-                <div class="form-control w-full bg-base-200/40 rounded-box p-3">
-                    <label class="label"><span class="label-text font-medium">Disciplina (opcional)</span></label>
+            <form id="simulador-form" class="flex flex-col gap-5">
+                <div class="form-control w-full">
+                    <label class="label px-0 pb-1">
+                        <span class="label-text font-medium text-sm">Disciplina <span class="font-normal text-base-content/40">(opcional, para preenchimento automático)</span></span>
+                    </label>
                     <select id="disciplinaSelect" class="select select-bordered w-full">
-                        <option value="">Selecione uma disciplina para preencher automaticamente</option>
+                        <option value="">Selecione uma disciplina</option>
                     </select>
                 </div>
 
-                <div class="form-control w-full">
-                    <label class="label"><span class="label-text font-medium">Nota 1 (N1)</span></label>
-                    <input id="nota1" type="number" min="0" max="100" step="0.1" placeholder="Sua nota" class="input input-bordered w-full" />
-                </div>
+                <div class="divider text-xs uppercase tracking-wider text-base-content/30 font-semibold my-0">Notas</div>
 
-                <div class="form-control w-full">
-                    <label class="label"><span class="label-text font-medium">Nota 2 (N2)</span></label>
-                    <input id="nota2" type="number" min="0" max="100" step="0.1" placeholder="Sua nota (deixe vazio se não fez)" class="input input-bordered w-full" />
-                </div>
-
-                <div class="divider my-1">Frequência</div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-base-200/40 rounded-box p-3">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="form-control w-full">
-                        <label class="label"><span class="label-text font-medium">Carga Horária</span></label>
+                        <label class="label px-0 pb-1">
+                            <span class="label-text font-medium text-sm">Nota 1 (N1)</span>
+                        </label>
+                        <input id="nota1" type="number" min="0" max="100" step="0.1" placeholder="Sua nota" class="input input-bordered w-full" />
+                    </div>
+                    <div class="form-control w-full">
+                        <label class="label px-0 pb-1">
+                            <span class="label-text font-medium text-sm">Nota 2 (N2)</span>
+                        </label>
+                        <input id="nota2" type="number" min="0" max="100" step="0.1" placeholder="Deixe vazio se não fez" class="input input-bordered w-full" />
+                    </div>
+                </div>
+
+                <div class="divider text-xs uppercase tracking-wider text-base-content/30 font-semibold my-0">Frequência</div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="form-control w-full">
+                        <label class="label px-0 pb-1">
+                            <span class="label-text font-medium text-sm">Carga Horária</span>
+                        </label>
                         <input id="cargaHoraria" type="number" min="0" max="1000" step="1" placeholder="Ex.: 80" class="input input-bordered w-full" />
                     </div>
                     <div class="form-control w-full">
-                        <label class="label"><span class="label-text font-medium">Faltas</span></label>
+                        <label class="label px-0 pb-1">
+                            <span class="label-text font-medium text-sm">Faltas</span>
+                        </label>
                         <input id="faltas" type="number" min="0" step="1" placeholder="Ex.: 6" class="input input-bordered w-full" />
                     </div>
                     <div class="form-control w-full">
-                        <label class="label"><span class="label-text font-medium">Limite de Faltas (25%)</span></label>
+                        <label class="label px-0 pb-1">
+                            <span class="label-text font-medium text-sm">Limite de Faltas (25%)</span>
+                        </label>
                         <input id="limiteFaltas" type="text" class="input input-bordered w-full" readonly />
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary mt-2 w-full">Calcular</button>
+                <button type="submit" class="btn btn-primary mt-2">Calcular</button>
             </form>
         </div>
     </div>
 
-    <div class="card bg-base-100 shadow-md border border-base-300/60 h-fit">
+    <div class="card card-bordered bg-base-100 h-fit">
         <div class="card-body">
-            <h2 class="card-title text-xl mb-2">Resultado da Simulação</h2>
-            <p id="resultadoHint" class="text-sm text-base-content/70 mb-4">Preencha os campos e clique em calcular para ver os detalhes.</p>
+            <h2 class="card-title text-xl font-semibold mb-1">Resultado</h2>
+            <p id="resultadoHint" class="text-sm text-base-content/50 mb-4">Preencha os campos e clique em calcular.</p>
 
             <div id="simuladorResultadoLoading" class="space-y-3 hidden">
                 <span class="skeleton h-24 w-full block"></span>
@@ -74,13 +91,13 @@
 
             <div id="simuladorResultadoContent">
             <div id="resultados" class="space-y-4 hidden">
-                <div class="stats stats-vertical bg-base-200 w-full">
-                    <div class="stat py-3">
-                        <div class="stat-title">Média Parcial</div>
+                <div class="stats stats-vertical bg-base-200/70 w-full rounded-lg">
+                    <div class="stat py-4">
+                        <div class="stat-title text-xs">Média Parcial</div>
                         <div id="mediaParcial" class="stat-value text-primary text-3xl">0.0</div>
                     </div>
-                    <div class="stat py-3">
-                        <div class="stat-title">Situação Atual</div>
+                    <div class="stat py-4">
+                        <div class="stat-title text-xs">Situação Atual</div>
                         <div id="situacaoAtual" class="stat-desc text-base font-semibold">-</div>
                     </div>
                 </div>
@@ -93,17 +110,13 @@
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
-                    <div class="card bg-base-200">
-                        <div class="card-body p-4">
-                            <p class="text-xs uppercase opacity-60">Frequência Atual</p>
-                            <p id="frequenciaAtual" class="font-bold text-lg">0%</p>
-                        </div>
+                    <div class="bg-base-200/70 rounded-lg p-4">
+                        <p class="text-xs font-semibold uppercase tracking-wider text-base-content/50 mb-1">Frequência Atual</p>
+                        <p id="frequenciaAtual" class="font-bold text-xl">0%</p>
                     </div>
-                    <div class="card bg-base-200">
-                        <div class="card-body p-4">
-                            <p class="text-xs uppercase opacity-60">Ainda pode faltar</p>
-                            <p id="podeFaltar" class="font-bold text-lg">-</p>
-                        </div>
+                    <div class="bg-base-200/70 rounded-lg p-4">
+                        <p class="text-xs font-semibold uppercase tracking-wider text-base-content/50 mb-1">Ainda pode faltar</p>
+                        <p id="podeFaltar" class="font-bold text-xl">-</p>
                     </div>
                 </div>
             </div>

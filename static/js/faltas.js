@@ -81,7 +81,7 @@
         // Renderizar Lista de Disciplinas
         faltas_list.innerHTML = data.diarios.map((diario) => {
             return `
-                <div class="card bg-base-100 shadow-md border border-base-200">
+                <div class="card card-bordered bg-base-100">
                     <div class="card-body p-5">
                         <div class="flex justify-between items-start gap-2 mb-2">
                             <h2 class="card-title text-base leading-tight">${escape_html(diario.descricao)}</h2>

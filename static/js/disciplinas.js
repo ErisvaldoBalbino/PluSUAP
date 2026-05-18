@@ -17,7 +17,7 @@
 
     function render_loading() {
         list_el.innerHTML = Array.from({ length: 4 }).map(() => `
-            <div class="card bg-base-100 shadow-md">
+            <div class="card card-bordered bg-base-100">
                 <div class="card-body">
                     <span class="skeleton h-6 w-3/4 inline-block"></span>
                     <span class="skeleton h-4 w-1/2 inline-block mt-2"></span>
@@ -71,7 +71,7 @@
             const freq = d.frequencia != null ? `${Math.round(d.frequencia)}%` : '-';
 
             return `
-            <div class="card bg-base-100 shadow-md border border-base-300/40 hover:shadow-lg transition-shadow">
+            <div class="card card-bordered bg-base-100 card-hoverable">
                 <div class="card-body py-5 gap-3">
                     <div class="flex justify-between items-start gap-2">
                         <h2 class="card-title text-base leading-snug">${nome}</h2>

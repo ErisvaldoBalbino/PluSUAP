@@ -1,13 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="w-full flex flex-wrap justify-between items-center gap-3 mb-6">
-    <h1 class="text-3xl font-bold">Minhas Disciplinas</h1>
+<div class="mb-6">
+    <h1 class="page-heading">Minhas Disciplinas</h1>
+    <p class="page-subtitle">Disciplinas matriculadas no período selecionado</p>
 </div>
 
 <div id="disciplinas-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
     {% for _ in range(4) %}
-    <div class="card bg-base-100 shadow-md">
+    <div class="card card-bordered bg-base-100 card-hoverable">
         <div class="card-body">
             <span class="skeleton h-6 w-3/4 inline-block"></span>
             <span class="skeleton h-4 w-1/2 inline-block mt-2"></span>
