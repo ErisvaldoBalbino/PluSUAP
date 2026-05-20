@@ -22,6 +22,12 @@ const CARGA_HORARIA_MAXIMA = 1000;
     const carga_horaria = document.getElementById('cargaHoraria');
     const limite_faltas = document.getElementById('limiteFaltas');
 
+    const nota1_val = document.getElementById('nota1-val');
+    const nota2_val = document.getElementById('nota2-val');
+    const faltas_val = document.getElementById('faltas-val');
+    const outcome_ring = document.getElementById('outcome-ring');
+    const freq_progress = document.getElementById('freq-progress');
+
     const media_parcial = document.getElementById('mediaParcial');
     const situacao_atual = document.getElementById('situacaoAtual');
     const frequencia_atual = document.getElementById('frequenciaAtual');
@@ -30,7 +36,7 @@ const CARGA_HORARIA_MAXIMA = 1000;
     const submit_button = form.querySelector('button[type="submit"]');
 
     let disciplinas_data = [];
-    const default_hint = 'Preencha os campos e clique em calcular para ver os detalhes.';
+    const default_hint = 'Preencha ou selecione uma disciplina e ajuste os controles para ver a previsão.';
 
     function parse_number(value) {
         const parsed = parseFloat(value);
@@ -42,8 +48,8 @@ const CARGA_HORARIA_MAXIMA = 1000;
         if (existing) existing.remove();
 
         const alert = document.createElement('div');
-        alert.className = `alert alert-${type} simulador-alert fixed top-4 right-4 z-[9999] shadow-lg max-w-sm`;
-        alert.innerHTML = `<span>${message}</span>`;
+        alert.className = `alert alert-${type} simulador-alert fixed top-4 right-4 z-[9999] shadow-lg max-w-sm rounded-xl border border-${type}/30 bg-${type}/10 backdrop-blur-md`;
+        alert.innerHTML = `<span class="font-bold text-xs">${message}</span>`;
         document.body.appendChild(alert);
         setTimeout(() => alert.remove(), 3000);
     }
@@ -58,7 +64,7 @@ const CARGA_HORARIA_MAXIMA = 1000;
         if (submit_button) submit_button.disabled = is_loading;
 
         if (is_loading) {
-            resultado_hint.textContent = 'Atualizando dados do período...';
+            resultado_hint.textContent = 'Buscando matérias do período no SUAP...';
             resultado_hint.classList.remove('hidden');
             resultados.classList.add('hidden');
         } else {
@@ -66,72 +72,79 @@ const CARGA_HORARIA_MAXIMA = 1000;
         }
     }
 
-    function validate_grade_input(input) {
-        const value = parseFloat(input.value);
-        if (Number.isNaN(value)) {
-            input.value = '';
-            return;
-        }
-        if (value > NOTA_MAXIMA) {
-            input.value = String(NOTA_MAXIMA);
-            show_alert(`A nota não pode ser maior que ${NOTA_MAXIMA}.`);
-        } else if (value < NOTA_MINIMA) {
-            input.value = String(NOTA_MINIMA);
-            show_alert(`A nota não pode ser menor que ${NOTA_MINIMA}.`);
-        }
-    }
-
-    function validate_non_negative_input(input) {
-        const value = parseFloat(input.value);
-        if (Number.isNaN(value)) {
-            input.value = '';
-            return;
-        }
-        if (value < 0) {
-            input.value = '0';
-            show_alert('O valor não pode ser negativo.');
-            return;
-        }
-        if (input.id === 'cargaHoraria' && value > CARGA_HORARIA_MAXIMA) {
-            input.value = String(CARGA_HORARIA_MAXIMA);
-            show_alert(`A carga horária não pode passar de ${CARGA_HORARIA_MAXIMA}.`);
-        }
-        if (input.id === 'faltas') {
-            const total = parse_number(carga_horaria.value);
-            if (value > total) {
-                input.value = String(total);
-                show_alert('Faltas não podem ser maiores que a carga horária.');
-            }
-        }
+    function sync_range_indicators() {
+        if (nota1_val) nota1_val.value = parse_number(nota_1.value).toFixed(0);
+        if (nota2_val) nota2_val.value = parse_number(nota_2.value).toFixed(0);
+        if (faltas_val) faltas_val.value = parse_number(faltas.value).toString();
     }
 
     function update_absence_limit() {
         const total = parse_number(carga_horaria.value);
-        limite_faltas.value = String(Math.floor(total * 0.25));
+        const maxLimit = Math.floor(total * 0.25);
+        limite_faltas.value = String(maxLimit);
+
+        // Adjust Absences slider boundaries to scale intelligently to double the presence limit or a base range
+        const maxRange = total > 0 ? Math.max(maxLimit * 2, 10) : 40;
+        faltas.max = String(maxRange);
+        if (faltas_val) {
+            faltas_val.max = String(maxRange);
+        }
+        
+        sync_range_indicators();
     }
 
     function calculate_higher_average(n1, n2) {
+        // SUAP academic weight distribution formula: (2 * N1 + 3 * N2) / 5
         return (2 * n1 + 3 * n2) / 5;
     }
 
     function calculate_higher_final_needed(average) {
+        // Passing academic average limit calculation
         return (MEDIA_APROVACAO * 2) - average;
     }
 
-    function set_situacao_label(average, has_any_grade) {
-        if (!has_any_grade) {
-            situacao_atual.innerHTML = '<span class="text-base-content/60">Preencha as notas para simular.</span>';
+    function update_outcome_gauge(average, freq_perc) {
+        if (!outcome_ring) return;
+
+        outcome_ring.style.boxShadow = 'none';
+        outcome_ring.className = 'w-12 h-12 rounded-full border-4 flex items-center justify-center font-black text-sm transition-all duration-300 ';
+
+        if (freq_perc < 75) {
+            outcome_ring.innerHTML = 'RF';
+            outcome_ring.classList.add('bg-error/15', 'border-error', 'text-error');
+            outcome_ring.style.boxShadow = '0 0 12px oklch(var(--er) / 0.4)';
+            return;
+        }
+
+        if (average >= MEDIA_APROVACAO) {
+            outcome_ring.innerHTML = 'AP';
+            outcome_ring.classList.add('bg-success/15', 'border-success', 'text-success');
+            outcome_ring.style.boxShadow = '0 0 12px oklch(var(--su) / 0.4)';
+        } else if (average >= MEDIA_FINAL) {
+            outcome_ring.innerHTML = 'PF';
+            outcome_ring.classList.add('bg-warning/15', 'border-warning', 'text-warning');
+            outcome_ring.style.boxShadow = '0 0 12px oklch(var(--wa) / 0.4)';
+        } else {
+            outcome_ring.innerHTML = 'RN';
+            outcome_ring.classList.add('bg-error/15', 'border-error', 'text-error');
+            outcome_ring.style.boxShadow = '0 0 12px oklch(var(--er) / 0.4)';
+        }
+    }
+
+    function set_situacao_label(average, freq_perc) {
+        if (freq_perc < 75) {
+            situacao_atual.innerHTML = '<span class="badge bg-error/15 border border-error/30 text-error font-extrabold px-3 py-1 text-xs">Reprovado por Faltas</span>';
             return;
         }
         if (average >= MEDIA_APROVACAO) {
-            situacao_atual.innerHTML = '<span class="badge badge-success badge-lg">Aprovado</span>';
+            situacao_atual.innerHTML = '<span class="badge bg-success/15 border border-success/30 text-success font-extrabold px-3 py-1 text-xs">Aprovado Direto</span>';
             return;
         }
         if (average < MEDIA_FINAL) {
-            situacao_atual.innerHTML = '<span class="badge badge-error badge-lg">Reprovado por Nota</span>';
+            situacao_atual.innerHTML = '<span class="badge bg-error/15 border border-error/30 text-error font-extrabold px-3 py-1 text-xs">Reprovado por Média</span>';
             return;
         }
-        situacao_atual.innerHTML = '<span class="badge badge-warning badge-lg">Prova Final</span>';
+        situacao_atual.innerHTML = '<span class="badge bg-warning/15 border border-warning/30 text-warning font-extrabold px-3 py-1 text-xs">Apto para Prova Final</span>';
     }
 
     function render_results() {
@@ -140,27 +153,36 @@ const CARGA_HORARIA_MAXIMA = 1000;
         const total_classes = parse_number(carga_horaria.value);
         const misses = parse_number(faltas.value);
 
-        const has_any_grade = [nota_1.value, nota_2.value]
-            .some((value) => String(value).trim() !== '');
-
         const average = calculate_higher_average(n1, n2);
         media_parcial.textContent = average.toFixed(1);
-        set_situacao_label(average, has_any_grade);
 
-        if (average >= MEDIA_FINAL && average < MEDIA_APROVACAO) {
+        const limit = Math.floor(total_classes * 0.25);
+        const remaining = limit - misses;
+        const freq = total_classes > 0 ? ((total_classes - misses) / total_classes) * 100 : 100;
+        const safe_freq = Math.max(freq, 0);
+
+        set_situacao_label(average, safe_freq);
+        update_outcome_gauge(average, safe_freq);
+
+        if (safe_freq >= 75 && average >= MEDIA_FINAL && average < MEDIA_APROVACAO) {
             necessidade_final.classList.remove('hidden');
             const needed = calculate_higher_final_needed(average);
-            possibilidades_finais.innerHTML = `<span>Nota necessária na final: <strong>${Number(needed).toFixed(1)}</strong></span>`;
+            possibilidades_finais.innerHTML = `Nota mínima necessária na prova final: <strong class="text-sm font-black underline decoration-2">${Number(needed).toFixed(1)}</strong>`;
         } else {
             necessidade_final.classList.add('hidden');
             possibilidades_finais.innerHTML = '';
         }
 
-        const limit = Math.floor(total_classes * 0.25);
-        const remaining = limit - misses;
-        const freq = total_classes > 0 ? ((total_classes - misses) / total_classes) * 100 : 0;
-        pode_faltar.textContent = remaining >= 0 ? `${remaining} aulas` : '0 aulas (limite excedido)';
-        frequencia_atual.textContent = `${Math.max(freq, 0).toFixed(1)}%`;
+        pode_faltar.textContent = remaining >= 0 ? `${remaining} aula(s)` : 'Limite excedido';
+        pode_faltar.className = remaining >= 0 ? 'font-extrabold text-xl text-base-content' : 'font-extrabold text-lg text-error';
+
+        frequencia_atual.textContent = `${safe_freq.toFixed(1)}%`;
+        frequencia_atual.className = safe_freq >= 75 ? 'font-extrabold text-xl text-success' : 'font-extrabold text-xl text-error';
+
+        if (freq_progress) {
+            freq_progress.value = safe_freq;
+            freq_progress.className = `progress ${safe_freq >= 75 ? 'progress-success' : 'progress-error'} w-full h-1 mt-3`;
+        }
 
         resultado_hint.classList.add('hidden');
         resultados.classList.remove('hidden');
@@ -190,26 +212,96 @@ const CARGA_HORARIA_MAXIMA = 1000;
         });
     }
 
-    function apply_discipline_data() {
-        const selected_index = parseInt(disciplina_select.value, 10);
-        if (Number.isNaN(selected_index) || !disciplinas_data[selected_index]) return;
-
-        const grade = disciplinas_data[selected_index];
-        nota_1.value = grade.n1_limpa !== '-' ? String(grade.n1_limpa) : '';
-        nota_2.value = grade.n2_limpa !== '-' ? String(grade.n2_limpa) : '';
-        carga_horaria.value = String(grade.carga_horaria ?? '');
-        faltas.value = String(grade.numero_faltas ?? '');
-        update_absence_limit();
-        show_alert('Dados da disciplina carregados.', 'success');
+    function clean_grade_for_slider(val) {
+        if (val === '-' || val === undefined || val === null || val === '') return 0;
+        const num = parseFloat(String(val).replace(',', '.'));
+        return isNaN(num) ? 0 : Math.round(num);
     }
 
-    [nota_1, nota_2].forEach((input) => input.addEventListener('input', () => validate_grade_input(input)));
-    [faltas, carga_horaria].forEach((input) => {
-        input.addEventListener('input', () => {
-            validate_non_negative_input(input);
-            if (input.id === 'cargaHoraria') update_absence_limit();
+    function apply_discipline_data() {
+        const selected_index = parseInt(disciplina_select.value, 10);
+        if (Number.isNaN(selected_index) || !disciplinas_data[selected_index]) {
+            // Reset to defaults
+            nota_1.value = '0';
+            nota_2.value = '0';
+            faltas.value = '0';
+            sync_range_indicators();
+            render_results();
+            return;
+        }
+
+        const grade = disciplinas_data[selected_index];
+        
+        nota_1.value = String(clean_grade_for_slider(grade.n1_limpa));
+        nota_2.value = String(clean_grade_for_slider(grade.n2_limpa));
+        carga_horaria.value = String(grade.carga_horaria ?? '80');
+        
+        update_absence_limit();
+        
+        faltas.value = String(grade.numero_faltas ?? '0');
+        
+        sync_range_indicators();
+        render_results();
+        
+    }
+
+    // Real-time calculation triggers on range slide and text input change
+    [nota_1, nota_2, faltas].forEach((slider, index) => {
+        slider.addEventListener('input', () => {
+            sync_range_indicators();
+            render_results();
         });
     });
+
+    // Bidirectional sync for number inputs
+    [nota1_val, nota2_val, faltas_val].forEach((numInput, index) => {
+        if (!numInput) return;
+        const slider = [nota_1, nota_2, faltas][index];
+
+        numInput.addEventListener('input', () => {
+            let val = parse_number(numInput.value);
+            const min = parse_number(slider.min || 0);
+            const max = parse_number(slider.max || 100);
+
+            // Temporarily clamp while typing to ensure bounds
+            if (val > max) val = max;
+            if (val < min) val = min;
+
+            slider.value = String(val);
+            render_results();
+        });
+
+        numInput.addEventListener('blur', () => {
+            let val = parse_number(numInput.value);
+            const min = parse_number(slider.min || 0);
+            const max = parse_number(slider.max || 100);
+
+            if (val > max) val = max;
+            if (val < min) val = min;
+
+            numInput.value = String(val);
+            slider.value = String(val);
+            render_results();
+        });
+    });
+
+    carga_horaria.addEventListener('input', () => {
+        const total = parse_number(carga_horaria.value);
+        if (total > CARGA_HORARIA_MAXIMA) {
+            carga_horaria.value = String(CARGA_HORARIA_MAXIMA);
+            show_alert(`Carga horária limitada a ${CARGA_HORARIA_MAXIMA}h.`, 'warning');
+        }
+        update_absence_limit();
+        
+        // Correct absences if they exceed the new bounds
+        if (parse_number(faltas.value) > total) {
+            faltas.value = String(total);
+        }
+        
+        sync_range_indicators();
+        render_results();
+    });
+
     disciplina_select.addEventListener('change', apply_discipline_data);
     form.addEventListener('submit', (event) => {
         event.preventDefault();
@@ -224,6 +316,7 @@ const CARGA_HORARIA_MAXIMA = 1000;
             disciplina_select.innerHTML = '<option value="">Erro ao carregar disciplinas</option>';
         } finally {
             set_loading_state(false);
+            apply_discipline_data(); // recalculate with reset values
         }
     });
 
@@ -241,6 +334,7 @@ const CARGA_HORARIA_MAXIMA = 1000;
             disciplina_select.innerHTML = '<option value="">Erro ao carregar disciplinas</option>';
         } finally {
             set_loading_state(false);
+            render_results();
         }
     });
 }());

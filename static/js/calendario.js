@@ -1,5 +1,6 @@
 (function () {
     const container = document.getElementById('calendario-container');
+    const timelineContainer = document.getElementById('timeline-container');
     if (!container) return;
 
     const MONTH_NAMES = [
@@ -91,7 +92,7 @@
             priority = h.tipo.includes('feriado') ? 3 : 2;
         }
         if (sabadoLetivoMap[ds]) {
-            events.push(`Sábado Letivo (${sabadoLetivoMap[ds]})`);
+            events.push(`Sábado Letivo (Compensa ${sabadoLetivoMap[ds]})`);
             cls = 'cal-sabado-letivo';
             priority = Math.max(priority, 1);
         }
@@ -111,29 +112,29 @@
         const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
 
         let html = `
-            <div class="flex items-center justify-between mb-4">
-                <button id="cal-prev" class="btn btn-sm btn-ghost btn-circle">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            <div class="flex items-center justify-between mb-5 px-1">
+                <button id="cal-prev" class="btn btn-sm btn-ghost btn-circle border border-base-300/40 bg-base-100/50 hover:bg-base-300 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
                     </svg>
                 </button>
-                <h3 class="font-bold text-lg">${MONTH_NAMES[currentMonth]} ${currentYear}</h3>
-                <button id="cal-next" class="btn btn-sm btn-ghost btn-circle">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                <h3 class="font-extrabold text-base md:text-lg text-base-content">${MONTH_NAMES[currentMonth]} ${currentYear}</h3>
+                <button id="cal-next" class="btn btn-sm btn-ghost btn-circle border border-base-300/40 bg-base-100/50 hover:bg-base-300 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
                     </svg>
                 </button>
             </div>
         `;
 
-        html += '<div class="grid grid-cols-7 gap-1 mb-1">';
+        html += '<div class="grid grid-cols-7 gap-1.5 mb-1.5">';
         DAY_NAMES.forEach((d, i) => {
-            const weekend = (i === 0 || i === 6) ? 'text-base-content/40' : '';
-            html += `<div class="text-center text-xs font-semibold py-1 ${weekend}">${d}</div>`;
+            const weekend = (i === 0 || i === 6) ? 'text-error/60' : 'text-base-content/40';
+            html += `<div class="text-center text-[10px] uppercase font-bold tracking-wider py-1 ${weekend}">${d}</div>`;
         });
         html += '</div>';
 
-        html += '<div class="grid grid-cols-7 gap-1">';
+        html += '<div class="grid grid-cols-7 gap-1.5">';
 
         for (let i = 0; i < firstDay; i++) {
             html += '<div class="cal-cell cal-empty"></div>';
@@ -152,17 +153,16 @@
             else if (isWeekend) cellCls += ' cal-weekend';
 
             const tooltip = info.events.length > 0 ? info.events.join(' • ') : '';
-            const tooltipAttr = tooltip ? `data-tip="${tooltip}" class="${cellCls} tooltip tooltip-bottom"` : `class="${cellCls}"`;
+            const tooltipAttr = tooltip ? `data-tip="${tooltip}" class="${cellCls} tooltip tooltip-top font-bold"` : `class="${cellCls}"`;
 
             html += `<div ${tooltipAttr}><span class="cal-day-num">${day}</span></div>`;
         }
 
         html += '</div>';
 
-        html += renderUpcoming();
-
         container.innerHTML = html;
 
+        // Attach listeners for prev/next month switcher
         document.getElementById('cal-prev').addEventListener('click', () => {
             currentMonth--;
             if (currentMonth < 0) { currentMonth = 11; currentYear--; }
@@ -175,46 +175,85 @@
         });
     }
 
-    function renderUpcoming() {
+    function escape_html(value) {
+        return String(value ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function renderUpcomingTimeline() {
+        if (!timelineContainer) return;
+
         const today = new Date();
         const todayStr = dateStr(today.getFullYear(), today.getMonth(), today.getDate());
 
         const upcoming = [];
-        for (let i = 0; i <= 30; i++) {
+        
+        // Scan upcoming 45 days chronologically
+        for (let i = 0; i <= 45; i++) {
             const d = new Date(today);
             d.setDate(d.getDate() + i);
             const ds = dateStr(d.getFullYear(), d.getMonth(), d.getDate());
             const info = getDayInfo(ds);
+            
             if (info.events.length > 0) {
                 const dayNum = d.getDate();
                 const monthName = MONTH_NAMES[d.getMonth()].slice(0, 3);
+                const dayOfWeekName = DAY_NAMES[d.getDay()];
                 upcoming.push({
-                    date: `${dayNum} ${monthName}`,
-                    label: info.events.join(', '),
+                    date: `${dayNum} ${monthName} (${dayOfWeekName})`,
+                    label: info.events.join(' • '),
                     cls: info.cls,
                     isToday: ds === todayStr,
                 });
             }
         }
 
-        if (upcoming.length === 0) return '';
-
-        let html = `
-            <div class="divider text-xs text-base-content/50 mt-4 mb-2">Próximos 30 dias</div>
-            <div class="flex flex-col gap-1.5 max-h-40 overflow-y-auto pr-1">
-        `;
-        upcoming.forEach(ev => {
-            const todayBadge = ev.isToday ? '<span class="badge badge-xs badge-primary ml-1">Hoje</span>' : '';
-            html += `
-                <div class="flex items-center gap-2 text-sm">
-                    <span class="cal-dot ${ev.cls}"></span>
-                    <span class="font-medium min-w-[3.5rem] text-base-content/60">${ev.date}</span>
-                    <span class="truncate">${ev.label}${todayBadge}</span>
+        if (upcoming.length === 0) {
+            timelineContainer.innerHTML = `
+                <div class="flex flex-col items-center justify-center py-12 text-center text-base-content/40">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 opacity-40 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+                    </svg>
+                    <p class="text-xs font-bold leading-normal">Sem eventos letivos agendados para os próximos 45 dias.</p>
                 </div>
             `;
-        });
-        html += '</div>';
-        return html;
+            return;
+        }
+
+        timelineContainer.innerHTML = upcoming.map(ev => {
+            const todayBadge = ev.isToday ? '<span class="badge badge-primary font-black text-[8px] uppercase tracking-wider py-1 px-1.5 rounded shadow shadow-primary/20 text-white">Hoje</span>' : '';
+            
+            // Build bullet color accent class
+            let bulletColor = 'bg-base-content/40';
+            if (ev.cls === 'cal-feriado') bulletColor = 'bg-error shadow-[0_0_8px_oklch(var(--er)/0.5)]';
+            else if (ev.cls === 'cal-facultativo') bulletColor = 'bg-warning shadow-[0_0_8px_oklch(var(--wa)/0.5)]';
+            else if (ev.cls === 'cal-prova') bulletColor = 'bg-purple-500 shadow-[0_0_8px_oklch(50%_0.18_290/0.5)]';
+            else if (ev.cls === 'cal-sabado-letivo') bulletColor = 'bg-cyan-500 shadow-[0_0_8px_oklch(65%_0.16_185/0.5)]';
+            else if (ev.cls === 'cal-encontro') bulletColor = 'bg-indigo-500 shadow-[0_0_8px_oklch(50%_0.16_250/0.5)]';
+            else if (ev.cls === 'cal-inicio') bulletColor = 'bg-primary shadow-[0_0_8px_oklch(var(--p)/0.5)]';
+            else if (ev.cls === 'cal-ferias') bulletColor = 'bg-yellow-600 shadow-[0_0_8px_oklch(70%_0.08_85/0.5)]';
+
+            return `
+                <div class="flex gap-3.5 items-start group pl-1">
+                    <!-- Event colored bullet -->
+                    <div class="w-2.5 h-2.5 rounded-full ${bulletColor} mt-1.5 shrink-0 relative z-10">
+                        ${ev.isToday ? `<div class="absolute inset-0 rounded-full animate-ping opacity-75 ${bulletColor}"></div>` : ''}
+                    </div>
+                    <!-- Timeline Card -->
+                    <div class="flex-1 rounded-xl p-3 bg-base-200/40 hover:bg-base-200/80 border border-base-300/30 transition duration-200">
+                        <div class="flex items-center justify-between gap-1 mb-1">
+                            <span class="text-[9px] font-black text-base-content/45 tracking-wider uppercase">${ev.date}</span>
+                            ${todayBadge}
+                        </div>
+                        <h4 class="text-xs font-bold text-base-content/85 leading-snug">${escape_html(ev.label)}</h4>
+                    </div>
+                </div>
+            `;
+        }).join('');
     }
 
     async function init() {
@@ -224,8 +263,11 @@
             calData = await res.json();
             buildMaps(calData);
             renderCalendar();
+            renderUpcomingTimeline();
         } catch (e) {
-            container.innerHTML = `<p class="text-sm text-base-content/50 text-center py-4">Calendário indisponível.</p>`;
+            console.error(e);
+            container.innerHTML = `<p class="text-sm text-base-content/50 text-center py-4 font-bold">Calendário indisponível.</p>`;
+            if (timelineContainer) timelineContainer.innerHTML = '';
         }
     }
 

@@ -6,3 +6,4 @@ Thumbs.db
 .env
 *.log 
 test.db 
+.agents/

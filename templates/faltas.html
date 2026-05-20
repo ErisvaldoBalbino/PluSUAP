@@ -1,72 +1,129 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="mb-6">
+<div class="mb-8">
     <h1 class="page-heading">Controle de Faltas</h1>
-    <p class="page-subtitle">Acompanhe suas faltas e o limite disponível por dia da semana</p>
 </div>
 
-<div id="faltas-loading">
-    <div class="skeleton h-32 w-full mb-6"></div>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Skeleton Loading Overlay -->
+<div id="faltas-loading" class="space-y-6">
+    <div class="skeleton h-48 w-full rounded-2xl"></div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         {% for _ in range(4) %}
-        <div class="card card-bordered bg-base-100">
-            <div class="card-body">
-                <span class="skeleton h-6 w-3/4 inline-block"></span>
-                <span class="skeleton h-4 w-1/2 inline-block mt-2"></span>
+        <div class="card glass-card p-6 border border-base-300/40">
+            <span class="skeleton h-6 w-3/4 inline-block rounded-md"></span>
+            <span class="skeleton h-4 w-1/2 inline-block mt-3 rounded-md"></span>
+            <div class="grid grid-cols-2 gap-4 mt-6">
+                <span class="skeleton h-14 w-full inline-block rounded-xl"></span>
+                <span class="skeleton h-14 w-full inline-block rounded-xl"></span>
             </div>
         </div>
         {% endfor %}
     </div>
 </div>
 
-<div id="faltas-empty" class="hidden text-center py-12 bg-base-100 rounded-lg border border-base-200">
-    <div class="w-12 h-12 mx-auto mb-4 rounded-full bg-base-200 flex items-center justify-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-base-content/30" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+<!-- Empty View -->
+<div id="faltas-empty" class="hidden text-center py-16 glass-card bg-base-100/20 rounded-2xl border border-base-300/40 animate-fade-in">
+    <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-base-200/50 flex items-center justify-center border border-base-300/40">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-base-content/30" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
         </svg>
     </div>
-    <h3 class="text-lg font-semibold">Nenhuma disciplina encontrada</h3>
-    <p class="text-base-content/50 text-sm mt-1">Não foi possível carregar as faltas para o período selecionado.</p>
+    <h3 class="text-xl font-extrabold text-base-content">Nenhuma disciplina encontrada</h3>
+    <p class="text-base-content/50 text-sm mt-2 max-w-xs mx-auto">Não foi possível carregar as faltas para o período selecionado.</p>
 </div>
 
-<div id="faltas-content" class="hidden">
-    <div class="card bg-primary text-primary-content shadow-lg mb-8">
-        <div class="card-body p-6">
-            <h2 class="card-title text-xl font-bold mb-5 border-b border-primary-content/15 pb-3">Panorama do Semestre</h2>
-
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                <div class="bg-primary-content/10 rounded-xl p-4 text-center">
-                    <div class="text-primary-content/60 text-xs font-semibold uppercase tracking-wider mb-1">Carga Horária Total</div>
-                    <div class="text-2xl font-bold" id="global-ch">0</div>
+<!-- Main Dynamic Content -->
+<div id="faltas-content" class="hidden animate-fade-in">
+    <!-- Sleek Attendance Summary Panel -->
+    <div class="card glass-card glass-panel-glow border border-base-300/40 p-6 bg-base-100/30 mb-8">
+        <h2 class="font-extrabold text-xl text-base-content mb-6">Panorama do Semestre</h2>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-[1fr_2.2fr] gap-8 items-center border-b border-base-300/20 pb-6 mb-6">
+            <!-- Left Side: Large Global Radial Meter -->
+            <div class="flex flex-col sm:flex-row lg:flex-col items-center justify-center gap-6 p-5 bg-base-200/25 rounded-2xl border border-base-300/30 w-full">
+                <div class="relative flex items-center justify-center">
+                    <div id="global-freq-radial" class="radial-progress text-primary transition-all duration-500 font-black text-2xl" style="--value: 0; --size: 8.5rem; --thickness: 10px;" role="progressbar">
+                        <span id="global-freq-val">0%</span>
+                    </div>
+                    <!-- Absolute glow backdrop -->
+                    <div class="absolute inset-0 -z-10 bg-primary/5 rounded-full blur-xl"></div>
                 </div>
-                <div class="bg-primary-content/10 rounded-xl p-4 text-center">
-                    <div class="text-primary-content/60 text-xs font-semibold uppercase tracking-wider mb-1">Limite Global</div>
-                    <div class="text-2xl font-bold" id="global-limite">0</div>
-                </div>
-                <div class="bg-primary-content/10 rounded-xl p-4 text-center">
-                    <div class="text-primary-content/60 text-xs font-semibold uppercase tracking-wider mb-1">Suas Faltas</div>
-                    <div class="text-2xl font-bold" id="global-faltas">0</div>
-                </div>
-                <div class="bg-primary-content/10 rounded-xl p-4 text-center">
-                    <div class="text-primary-content/60 text-xs font-semibold uppercase tracking-wider mb-1">Faltas Restantes</div>
-                    <div class="text-2xl font-bold" id="global-restantes">0</div>
+                <div class="text-center sm:text-left lg:text-center">
+                    <h3 class="font-bold text-sm text-base-content">Frequência Geral</h3>
+                    <span id="global-freq-badge" class="badge mt-2.5 font-extrabold text-xs">Analisando...</span>
                 </div>
             </div>
+            
+            <!-- Right Side: Elevated metrics -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+                <!-- Total de Aulas -->
+                <div class="bg-base-200/40 border border-base-300/20 rounded-2xl p-4 flex items-center gap-4 shadow-sm">
+                    <div class="p-3 bg-primary/10 rounded-xl text-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="text-[10px] uppercase font-black tracking-wider text-base-content/40">Total de Aulas</div>
+                        <div class="text-2xl font-black text-base-content" id="global-ch">0</div>
+                    </div>
+                </div>
 
-            <h3 class="font-semibold text-lg mb-3">Quantas vezes você ainda pode faltar em cada dia:</h3>
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3" id="global-dias">
+                <!-- Limite -->
+                <div class="bg-base-200/40 border border-base-300/20 rounded-2xl p-4 flex items-center gap-4 shadow-sm">
+                    <div class="p-3 bg-warning/10 rounded-xl text-warning">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="text-[10px] uppercase font-black tracking-wider text-base-content/40">Limite de Faltas</div>
+                        <div class="text-2xl font-black text-base-content" id="global-limite">0</div>
+                    </div>
+                </div>
+
+                <!-- Cometidas -->
+                <div class="bg-base-200/40 border border-base-300/20 rounded-2xl p-4 flex items-center gap-4 shadow-sm">
+                    <div class="p-3 bg-secondary/10 rounded-xl text-secondary">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="text-[10px] uppercase font-black tracking-wider text-base-content/40">Faltas Cometidas</div>
+                        <div class="text-2xl font-black text-base-content" id="global-faltas">0</div>
+                    </div>
+                </div>
+
+                <!-- Restantes -->
+                <div class="bg-base-200/40 border border-base-300/20 rounded-2xl p-4 flex items-center gap-4 shadow-sm">
+                    <div id="remaining-box-icon" class="p-3 bg-success/10 rounded-xl text-success">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="text-[10px] uppercase font-black tracking-wider text-base-content/40">Saldo Restante</div>
+                        <div class="text-2xl font-black text-success" id="global-restantes">0</div>
+                    </div>
+                </div>
             </div>
+        </div>
+
+        <h3 class="font-extrabold text-xs mb-3.5 uppercase tracking-wider text-base-content/60">Tolerância por Dia da Semana</h3>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3" id="global-dias">
         </div>
     </div>
 
-    <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-base-content/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+    <!-- Double-column Grid List of Cards -->
+    <h2 class="text-lg font-black mb-5 flex items-center gap-2 text-base-content">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
         </svg>
         Detalhamento por Disciplina
     </h2>
-    <div id="faltas-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div id="faltas-list" class="grid grid-cols-1 md:grid-cols-2 gap-6">
     </div>
 </div>
 {% endblock %}

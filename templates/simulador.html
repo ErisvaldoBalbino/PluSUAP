@@ -1,125 +1,163 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="mb-6">
-    <h1 class="page-heading">Simulador</h1>
-    <p class="page-subtitle">Simule notas e frequência para prever seu desempenho</p>
+<div class="mb-8">
+    <h1 class="page-heading">Simulador de Desempenho</h1>
 </div>
 
-<div class="grid grid-cols-1 xl:grid-cols-[1.2fr_1fr] gap-6 items-start">
-    <div class="card card-bordered bg-base-100">
-        <div class="card-body">
-            <h2 class="card-title text-xl font-semibold mb-1">Simulação Manual</h2>
-            <p class="text-sm text-base-content/50 mb-4">Preencha os campos para simular seu resultado</p>
+<!-- 2-Column Workspace Layout -->
+<div class="grid grid-cols-1 xl:grid-cols-[1.2fr_1fr] gap-8 items-start animate-fade-in">
+    
+    <!-- Left Column: Interactive Inputs Panel -->
+    <div class="card glass-card glass-panel-glow bg-base-100/30 p-6 border border-base-300/40">
+        <h2 class="font-extrabold text-lg text-base-content mb-6">Ajustes da Simulação</h2>
 
-            <div id="simuladorFormLoading" class="space-y-4 hidden mb-3">
-                <span class="skeleton h-10 w-full block"></span>
-                <span class="skeleton h-9 w-1/2 block"></span>
-                <span class="skeleton h-10 w-full block"></span>
-                <span class="skeleton h-10 w-full block"></span>
-                <span class="skeleton h-10 w-full block"></span>
+        <!-- Skeleton Form Loader -->
+        <div id="simuladorFormLoading" class="space-y-5 hidden mb-3">
+            <span class="skeleton h-12 w-full block rounded-lg"></span>
+            <span class="skeleton h-14 w-full block rounded-lg"></span>
+            <span class="skeleton h-14 w-full block rounded-lg"></span>
+            <span class="skeleton h-12 w-full block rounded-lg"></span>
+        </div>
+
+        <form id="simulador-form" class="flex flex-col gap-6" onsubmit="event.preventDefault();">
+            <!-- Subject Dropdown -->
+            <div class="form-control w-full">
+                <label class="label px-0 pb-1.5">
+                    <span class="label-text font-bold text-sm">Disciplina Acadêmica</span>
+                </label>
+                <select id="disciplinaSelect" class="select select-bordered select-md w-full font-bold bg-base-100 border-base-300/60 rounded-xl text-sm">
+                    <option value="">Selecione uma disciplina para preencher</option>
+                </select>
             </div>
 
-            <form id="simulador-form" class="flex flex-col gap-5">
+            <!-- Notes Section with Range Sliders -->
+            <div class="divider text-[10px] uppercase tracking-widest text-base-content/30 font-bold my-2">Notas</div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Note 1 (N1) Slider -->
                 <div class="form-control w-full">
-                    <label class="label px-0 pb-1">
-                        <span class="label-text font-medium text-sm">Disciplina <span class="font-normal text-base-content/40">(opcional, para preenchimento automático)</span></span>
+                    <label class="label px-0 pb-1.5">
+                        <span class="label-text font-bold text-xs text-base-content/70">Nota 1 (N1)</span>
                     </label>
-                    <select id="disciplinaSelect" class="select select-bordered w-full">
-                        <option value="">Selecione uma disciplina</option>
-                    </select>
-                </div>
-
-                <div class="divider text-xs uppercase tracking-wider text-base-content/30 font-semibold my-0">Notas</div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="form-control w-full">
-                        <label class="label px-0 pb-1">
-                            <span class="label-text font-medium text-sm">Nota 1 (N1)</span>
-                        </label>
-                        <input id="nota1" type="number" min="0" max="100" step="0.1" placeholder="Sua nota" class="input input-bordered w-full" />
-                    </div>
-                    <div class="form-control w-full">
-                        <label class="label px-0 pb-1">
-                            <span class="label-text font-medium text-sm">Nota 2 (N2)</span>
-                        </label>
-                        <input id="nota2" type="number" min="0" max="100" step="0.1" placeholder="Deixe vazio se não fez" class="input input-bordered w-full" />
+                    <div class="flex items-center gap-3 w-full">
+                        <input id="nota1" type="range" min="0" max="100" step="1" value="0" class="glass-range flex-1" />
+                        <input id="nota1-val" type="number" min="0" max="100" step="1" value="0" class="input input-bordered input-sm w-16 text-center font-extrabold text-primary bg-base-100 rounded-lg border-base-300 focus:border-primary/50" />
                     </div>
                 </div>
 
-                <div class="divider text-xs uppercase tracking-wider text-base-content/30 font-semibold my-0">Frequência</div>
+                <!-- Note 2 (N2) Slider -->
+                <div class="form-control w-full">
+                    <label class="label px-0 pb-1.5">
+                        <span class="label-text font-bold text-xs text-base-content/70">Nota 2 (N2)</span>
+                    </label>
+                    <div class="flex items-center gap-3 w-full">
+                        <input id="nota2" type="range" min="0" max="100" step="1" value="0" class="glass-range flex-1" />
+                        <input id="nota2-val" type="number" min="0" max="100" step="1" value="0" class="input input-bordered input-sm w-16 text-center font-extrabold text-primary bg-base-100 rounded-lg border-base-300 focus:border-primary/50" />
+                    </div>
+                </div>
+            </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="form-control w-full">
-                        <label class="label px-0 pb-1">
-                            <span class="label-text font-medium text-sm">Carga Horária</span>
-                        </label>
-                        <input id="cargaHoraria" type="number" min="0" max="1000" step="1" placeholder="Ex.: 80" class="input input-bordered w-full" />
-                    </div>
-                    <div class="form-control w-full">
-                        <label class="label px-0 pb-1">
-                            <span class="label-text font-medium text-sm">Faltas</span>
-                        </label>
-                        <input id="faltas" type="number" min="0" step="1" placeholder="Ex.: 6" class="input input-bordered w-full" />
-                    </div>
-                    <div class="form-control w-full">
-                        <label class="label px-0 pb-1">
-                            <span class="label-text font-medium text-sm">Limite de Faltas (25%)</span>
-                        </label>
-                        <input id="limiteFaltas" type="text" class="input input-bordered w-full" readonly />
+            <!-- Attendance Section -->
+            <div class="divider text-[10px] uppercase tracking-widest text-base-content/30 font-bold my-2">Frequência</div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Hours Count Input with Quick Prefill Chips -->
+                <div class="form-control w-full">
+                    <label class="label px-0 pb-1.5">
+                        <span class="label-text font-bold text-xs text-base-content/70">Carga Horária (Aulas)</span>
+                    </label>
+                    <input id="cargaHoraria" type="number" min="0" max="500" step="1" placeholder="Ex.: 80" class="input input-bordered w-full font-bold rounded-xl text-sm" />
+                    <!-- Quick Prefills -->
+                    <div class="flex gap-2 mt-2">
+                        <button type="button" onclick="document.getElementById('cargaHoraria').value=40; document.getElementById('cargaHoraria').dispatchEvent(new Event('input'));" class="btn btn-xs btn-outline border-base-300 font-bold rounded-md px-2.5">40h</button>
+                        <button type="button" onclick="document.getElementById('cargaHoraria').value=80; document.getElementById('cargaHoraria').dispatchEvent(new Event('input'));" class="btn btn-xs btn-outline border-base-300 font-bold rounded-md px-2.5">80h</button>
+                        <button type="button" onclick="document.getElementById('cargaHoraria').value=120; document.getElementById('cargaHoraria').dispatchEvent(new Event('input'));" class="btn btn-xs btn-outline border-base-300 font-bold rounded-md px-2.5">120h</button>
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary mt-2">Calcular</button>
-            </form>
-        </div>
+                <!-- Absences Slider -->
+                <div class="form-control w-full">
+                    <label class="label px-0 pb-1.5">
+                        <span class="label-text font-bold text-xs text-base-content/70">Quantidade de Faltas</span>
+                    </label>
+                    <div class="flex items-center gap-3 w-full">
+                        <input id="faltas" type="range" min="0" max="40" step="1" value="0" class="glass-range flex-1" />
+                        <input id="faltas-val" type="number" min="0" max="40" step="1" value="0" class="input input-bordered input-sm w-16 text-center font-extrabold text-warning bg-base-100 rounded-lg border-base-300 focus:border-warning/50" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hidden Inputs for logic compatibility -->
+            <input id="limiteFaltas" type="hidden" />
+        </form>
     </div>
 
-    <div class="card card-bordered bg-base-100 h-fit">
-        <div class="card-body">
-            <h2 class="card-title text-xl font-semibold mb-1">Resultado</h2>
-            <p id="resultadoHint" class="text-sm text-base-content/50 mb-4">Preencha os campos e clique em calcular.</p>
+    <!-- Right Column: Real-time Live Outcome Dashboard -->
+    <div class="card glass-card border border-base-300/40 p-6 bg-base-100 shadow-2xl">
+        <h2 class="font-extrabold text-lg text-base-content mb-6">Previsão Acadêmica</h2>
+        <p id="resultadoHint" class="hidden"></p>
 
-            <div id="simuladorResultadoLoading" class="space-y-3 hidden">
-                <span class="skeleton h-24 w-full block"></span>
-                <span class="skeleton h-14 w-full block"></span>
-                <div class="grid grid-cols-2 gap-3">
-                    <span class="skeleton h-16 w-full block"></span>
-                    <span class="skeleton h-16 w-full block"></span>
-                </div>
+        <!-- Skeleton Results Loader -->
+        <div id="simuladorResultadoLoading" class="space-y-4 hidden">
+            <span class="skeleton h-24 w-full block rounded-lg"></span>
+            <span class="skeleton h-14 w-full block rounded-lg"></span>
+            <div class="grid grid-cols-2 gap-4">
+                <span class="skeleton h-16 w-full block rounded-lg"></span>
+                <span class="skeleton h-16 w-full block rounded-lg"></span>
             </div>
+        </div>
 
-            <div id="simuladorResultadoContent">
-            <div id="resultados" class="space-y-4 hidden">
-                <div class="stats stats-vertical bg-base-200/70 w-full rounded-lg">
-                    <div class="stat py-4">
-                        <div class="stat-title text-xs">Média Parcial</div>
-                        <div id="mediaParcial" class="stat-value text-primary text-3xl">0.0</div>
+        <div id="simuladorResultadoContent">
+            <div id="resultados" class="space-y-6 hidden">
+                <!-- Large Status / Average Panel -->
+                <div class="stats stats-vertical bg-base-200/50 w-full rounded-2xl border border-base-300/30 overflow-hidden shadow-inner">
+                    <div class="stat py-5 px-6 flex items-center justify-between">
+                        <div>
+                            <div class="stat-title text-[10px] uppercase font-black tracking-wider text-base-content/40 mb-1">Média Parcial</div>
+                            <div id="mediaParcial" class="stat-value text-primary font-black text-4xl leading-none">0.0</div>
+                        </div>
+                        <!-- Outcome Ring Indicator -->
+                        <div id="outcome-ring" class="w-12 h-12 rounded-full border-4 border-base-300 flex items-center justify-center font-black text-sm">
+                            -
+                        </div>
                     </div>
-                    <div class="stat py-4">
-                        <div class="stat-title text-xs">Situação Atual</div>
-                        <div id="situacaoAtual" class="stat-desc text-base font-semibold">-</div>
+                    <div class="stat py-4 px-6 border-t border-base-300/30 bg-base-200/30">
+                        <div class="stat-title text-[10px] uppercase font-black tracking-wider text-base-content/40 mb-1">Situação</div>
+                        <div id="situacaoAtual" class="stat-desc text-base font-extrabold text-base-content">-</div>
                     </div>
                 </div>
 
-                <div id="necessidadeFinal" class="alert alert-warning hidden">
-                    <div>
-                        <p class="font-semibold">Necessidade na Final</p>
-                        <div id="possibilidadesFinais" class="text-sm mt-1"></div>
+                <!-- Final Exam Requirement Alert banner -->
+                <div id="necessidadeFinal" class="alert bg-warning/15 border border-warning/30 text-warning rounded-2xl p-4 hidden">
+                    <div class="flex items-start gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 mt-0.5 text-warning" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        <div>
+                            <h4 class="font-extrabold text-sm text-warning leading-none mb-1">Prova Final Necessária</h4>
+                            <div id="possibilidadesFinais" class="text-xs font-semibold leading-relaxed text-warning/85 mt-1"></div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="bg-base-200/70 rounded-lg p-4">
-                        <p class="text-xs font-semibold uppercase tracking-wider text-base-content/50 mb-1">Frequência Atual</p>
-                        <p id="frequenciaAtual" class="font-bold text-xl">0%</p>
+                <!-- Circular Absences Gauge Details -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-base-200/40 border border-base-300/30 rounded-2xl p-4 shadow-sm flex flex-col justify-between">
+                        <div>
+                            <p class="text-[10px] font-black uppercase tracking-wider text-base-content/40 mb-1">Frequência</p>
+                            <p id="frequenciaAtual" class="font-extrabold text-xl text-base-content leading-none mt-1">100%</p>
+                        </div>
+                        <!-- Micro bar -->
+                        <progress id="freq-progress" class="progress progress-success w-full h-1 mt-3" value="100" max="100"></progress>
                     </div>
-                    <div class="bg-base-200/70 rounded-lg p-4">
-                        <p class="text-xs font-semibold uppercase tracking-wider text-base-content/50 mb-1">Ainda pode faltar</p>
-                        <p id="podeFaltar" class="font-bold text-xl">-</p>
+                    <div class="bg-base-200/40 border border-base-300/30 rounded-2xl p-4 shadow-sm flex flex-col justify-between">
+                        <div>
+                            <p class="text-[10px] font-black uppercase tracking-wider text-base-content/40 mb-1">Limite de Faltas</p>
+                            <p id="podeFaltar" class="font-extrabold text-xl text-base-content leading-none mt-1">-</p>
+                        </div>
                     </div>
                 </div>
-            </div>
             </div>
         </div>
     </div>

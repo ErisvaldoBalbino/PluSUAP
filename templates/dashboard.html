@@ -1,141 +1,188 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="mb-6">
-    <h1 class="page-heading">Início</h1>
-    <p class="page-subtitle">Visão geral do seu desempenho acadêmico</p>
+<div class="mb-8">
+    <h1 class="page-heading animate-fade-in">Painel Acadêmico</h1>
 </div>
 
-<div class="card card-elevated bg-base-100 mb-6">
-    <div class="card-body p-5">
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-            <div class="flex items-start gap-4">
-                <div class="metric-icon bg-primary/10 text-primary hidden sm:flex">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                    </svg>
-                </div>
-                <div>
-                    <p class="text-xs font-semibold uppercase tracking-wider text-base-content/50 mb-0.5">Aluno Conectado</p>
-                    <h2 id="student-name" class="text-2xl font-bold leading-tight">
-                        <span class="skeleton h-8 w-56 inline-block"></span>
-                    </h2>
-                    <p id="student-course" class="text-sm text-base-content/60 mt-1">
-                        <span class="skeleton h-4 w-72 inline-block"></span>
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-    <div class="metric-card bg-base-100 card-elevated">
-        <div class="metric-accent bg-primary"></div>
-        <div class="metric-body">
-            <div class="metric-title">Disciplinas Cursadas</div>
-            <div id="summary-total" class="metric-value text-primary">
-                <span class="skeleton h-9 w-10 inline-block align-middle"></span>
-            </div>
-        </div>
-    </div>
-    <div class="metric-card bg-base-100 card-elevated">
-        <div class="metric-accent bg-success"></div>
-        <div class="metric-body">
-            <div class="metric-title">Disciplinas Aprovadas</div>
-            <div id="summary-approved" class="metric-value text-success">
-                <span class="skeleton h-9 w-10 inline-block align-middle"></span>
-            </div>
-        </div>
-    </div>
-    <div class="metric-card bg-base-100 card-elevated">
-        <div class="metric-accent bg-error"></div>
-        <div class="metric-body">
-            <div class="metric-title">Situação em Risco</div>
-            <div id="summary-risk" class="metric-value text-error">
-                <span class="skeleton h-9 w-10 inline-block align-middle"></span>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="card card-bordered bg-base-100 overflow-hidden">
-    <div class="card-body p-0">
-        <div class="px-5 pt-5 pb-3 border-b border-base-200">
-            <h2 class="card-title text-base font-semibold">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-base-content/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+<!-- Student Connected Info Banner (Glassmorphism) -->
+<div class="glass-card glass-panel-glow p-6 mb-6 rounded-2xl flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <div class="flex items-center gap-4">
+        <!-- Connected Student Avatar with glowing halo -->
+        <div class="w-14 h-14 rounded-full bg-gradient-to-tr from-primary to-accent p-1 flex items-center justify-center shadow-lg shadow-primary/20 shrink-0">
+            <div class="w-full h-full rounded-full bg-base-100 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                 </svg>
-                Notas e Frequência
-            </h2>
+            </div>
         </div>
-        <div class="overflow-x-auto">
-            <table class="table table-sm w-full">
-                <thead class="bg-base-200/50">
-                    <tr>
-                        <th class="text-xs font-semibold uppercase tracking-wider">Disciplina</th>
-                        <th class="text-center text-xs font-semibold uppercase tracking-wider">C.H.</th>
-                        <th class="text-center text-xs font-semibold uppercase tracking-wider">Aulas</th>
-                        <th class="text-center text-xs font-semibold uppercase tracking-wider">Faltas</th>
-                        <th class="text-center text-xs font-semibold uppercase tracking-wider">% Freq.</th>
-                        <th class="text-center text-xs font-semibold uppercase tracking-wider">N1</th>
-                        <th class="text-center text-xs font-semibold uppercase tracking-wider">N2</th>
-                        <th class="text-center text-xs font-semibold uppercase tracking-wider">Média</th>
-                        <th class="text-xs font-semibold uppercase tracking-wider">Status</th>
-                    </tr>
-                </thead>
-                <tbody id="grades-body">
-                    {% for _ in range(6) %}
-                    <tr>
-                        <td><span class="skeleton h-4 w-48 inline-block"></span></td>
-                        <td class="text-center"><span class="skeleton h-4 w-8 inline-block"></span></td>
-                        <td class="text-center"><span class="skeleton h-4 w-8 inline-block"></span></td>
-                        <td class="text-center"><span class="skeleton h-4 w-8 inline-block"></span></td>
-                        <td class="text-center"><span class="skeleton h-4 w-10 inline-block"></span></td>
-                        <td class="text-center"><span class="skeleton h-4 w-8 inline-block"></span></td>
-                        <td class="text-center"><span class="skeleton h-4 w-8 inline-block"></span></td>
-                        <td class="text-center"><span class="skeleton h-4 w-8 inline-block"></span></td>
-                        <td><span class="skeleton h-5 w-20 inline-block"></span></td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-                <tfoot id="grades-footer" class="bg-base-200/50 font-semibold hidden">
-                    <tr>
-                        <td class="text-sm">Total:</td>
-                        <td id="footer-ch" class="text-center text-sm">-</td>
-                        <td id="footer-aulas" class="text-center text-sm">-</td>
-                        <td id="footer-faltas" class="text-center text-sm">-</td>
-                        <td id="footer-freq" class="text-center text-sm">-</td>
-                        <td colspan="4"></td>
-                    </tr>
-                </tfoot>
-            </table>
+        <div class="min-w-0">
+            <h2 id="student-name" class="text-xl md:text-2xl font-black leading-tight truncate text-base-content">
+                <span class="skeleton h-7 w-56 inline-block rounded"></span>
+            </h2>
+            <p id="student-course" class="text-xs md:text-sm font-semibold text-base-content/60 mt-0.5 truncate">
+                <span class="skeleton h-4 w-72 inline-block rounded"></span>
+            </p>
+        </div>
+    </div>
+    
+    <!-- Connected Badge Indicator -->
+    <div class="shrink-0 self-start md:self-auto">
+        <span class="badge badge-success badge-sm py-3 px-4 font-bold text-white shadow-sm flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+            SUAP
+        </span>
+    </div>
+</div>
+
+<!-- Performance Metrics Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+    <div class="metric-card card-hoverable bg-base-100">
+        <div class="metric-body">
+            <div class="metric-title">Matérias Cursadas</div>
+            <div id="summary-total" class="metric-value text-primary">
+                <span class="skeleton h-10 w-10 inline-block align-middle rounded"></span>
+            </div>
+        </div>
+        <div class="metric-icon-container">
+            <div class="metric-icon-bg metric-icon-bg-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+            </div>
+        </div>
+    </div>
+    <div class="metric-card card-hoverable bg-base-100">
+        <div class="metric-body">
+            <div class="metric-title">Aprovações</div>
+            <div id="summary-approved" class="metric-value text-success">
+                <span class="skeleton h-10 w-10 inline-block align-middle rounded"></span>
+            </div>
+        </div>
+        <div class="metric-icon-container">
+            <div class="metric-icon-bg metric-icon-bg-success">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                </svg>
+            </div>
+        </div>
+    </div>
+    <div class="metric-card card-hoverable bg-base-100">
+        <div class="metric-body">
+            <div class="metric-title">Atenção / Risco</div>
+            <div id="summary-risk" class="metric-value text-error">
+                <span class="skeleton h-10 w-10 inline-block align-middle rounded"></span>
+            </div>
+        </div>
+        <div class="metric-icon-container">
+            <div class="metric-icon-bg metric-icon-bg-error">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+            </div>
         </div>
     </div>
 </div>
 
-<div class="card card-bordered bg-base-100 mt-6">
-    <div class="card-body">
-        <div class="flex items-center gap-2 mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-base-content/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+<!-- Grades and Attendance Table Panel -->
+<div class="card bg-base-100 shadow-xl overflow-hidden mb-8 border border-base-300/40">
+    <div class="px-6 py-5 border-b border-base-200 bg-base-200/20 flex items-center justify-between">
+        <h2 class="text-base font-extrabold tracking-tight flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
-            <h2 class="card-title text-base font-semibold">Calendário Acadêmico 2026</h2>
-        </div>
-        <div class="flex flex-col lg:flex-row gap-6">
-            <div id="calendario-container" class="flex-1 min-w-0">
-                <div class="flex justify-center py-8"><span class="loading loading-spinner loading-md"></span></div>
+            Boletim: Notas e Frequências
+        </h2>
+    </div>
+    
+    <div class="overflow-x-auto w-full">
+        <table class="table table-sm md:table-md w-full min-w-[700px]">
+            <thead class="bg-base-200/50 text-base-content/75">
+                <tr>
+                    <th class="text-xs font-bold uppercase tracking-wider pl-6">Disciplina</th>
+                    <th class="text-center text-xs font-bold uppercase tracking-wider">C.H.</th>
+                    <th class="text-center text-xs font-bold uppercase tracking-wider">Aulas</th>
+                    <th class="text-center text-xs font-bold uppercase tracking-wider">Faltas</th>
+                    <th class="text-center text-xs font-bold uppercase tracking-wider">% Frequência</th>
+                    <th class="text-center text-xs font-bold uppercase tracking-wider">N1</th>
+                    <th class="text-center text-xs font-bold uppercase tracking-wider">N2</th>
+                    <th class="text-center text-xs font-bold uppercase tracking-wider">Média</th>
+                    <th class="text-xs font-bold uppercase tracking-wider pr-6">Situação</th>
+                </tr>
+            </thead>
+            <tbody id="grades-body" class="divide-y divide-base-200/50">
+                {% for _ in range(6) %}
+                <tr>
+                    <td class="pl-6"><span class="skeleton h-4 w-52 inline-block rounded"></span></td>
+                    <td class="text-center"><span class="skeleton h-4 w-12 inline-block rounded"></span></td>
+                    <td class="text-center"><span class="skeleton h-4 w-8 inline-block rounded"></span></td>
+                    <td class="text-center"><span class="skeleton h-4 w-8 inline-block rounded"></span></td>
+                    <td class="text-center"><span class="skeleton h-4 w-16 inline-block rounded"></span></td>
+                    <td class="text-center"><span class="skeleton h-4 w-8 inline-block rounded"></span></td>
+                    <td class="text-center"><span class="skeleton h-4 w-8 inline-block rounded"></span></td>
+                    <td class="text-center"><span class="skeleton h-4 w-8 inline-block rounded"></span></td>
+                    <td class="pr-6"><span class="skeleton h-6 w-24 inline-block rounded"></span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot id="grades-footer" class="bg-base-200/50 font-bold border-t border-base-300 hidden text-base-content/80">
+                <tr>
+                    <td class="text-sm font-extrabold pl-6">Total / Média Geral:</td>
+                    <td id="footer-ch" class="text-center text-sm font-semibold">-</td>
+                    <td id="footer-aulas" class="text-center text-sm font-semibold">-</td>
+                    <td id="footer-faltas" class="text-center text-sm font-semibold">-</td>
+                    <td id="footer-freq" class="text-center text-sm font-extrabold text-primary">-</td>
+                    <td colspan="4" class="pr-6"></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+<!-- Calendar and Academic Schedule Panel -->
+<div class="card bg-base-100 shadow-xl border border-base-300/40 p-6">
+    <div class="flex items-center gap-2 mb-6">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+        </svg>
+        <h2 class="text-lg font-extrabold tracking-tight">Calendário Escolar 2026</h2>
+    </div>
+
+    <!-- Calendar Columns: Grid and Timeline List -->
+    <div class="flex flex-col lg:flex-row gap-8 items-start">
+        
+        <!-- Left Side: Interactive Grid -->
+        <div class="flex-1 w-full min-w-0">
+            <div id="calendario-container" class="w-full">
+                <div class="flex justify-center py-12">
+                    <span class="loading loading-spinner loading-md text-primary"></span>
+                </div>
             </div>
-            <div class="lg:w-48 flex flex-col gap-1.5 text-xs lg:pt-2">
-                <div class="flex items-center gap-2"><span class="cal-dot cal-feriado"></span> Feriado</div>
-                <div class="flex items-center gap-2"><span class="cal-dot cal-facultativo"></span> Ponto Facultativo</div>
-                <div class="flex items-center gap-2"><span class="cal-dot cal-prova"></span> Prova Final</div>
-                <div class="flex items-center gap-2"><span class="cal-dot cal-sabado-letivo"></span> Sábado Letivo</div>
-                <div class="flex items-center gap-2"><span class="cal-dot cal-encontro"></span> Enc. Pedagógico</div>
-                <div class="flex items-center gap-2"><span class="cal-dot cal-inicio"></span> Início das Aulas</div>
-                <div class="flex items-center gap-2"><span class="cal-dot cal-ferias"></span> Férias Docentes</div>
+            
+            <!-- Legend Indicators -->
+            <div class="mt-6 flex flex-wrap gap-3 p-4 rounded-xl bg-base-200/40 border border-base-200 text-[10px] uppercase font-bold tracking-wider text-base-content/60">
+                <div class="flex items-center gap-1.5"><span class="cal-dot cal-feriado"></span> Feriado</div>
+                <div class="flex items-center gap-1.5"><span class="cal-dot cal-facultativo"></span> Ponto Facultativo</div>
+                <div class="flex items-center gap-1.5"><span class="cal-dot cal-prova"></span> Prova Final</div>
+                <div class="flex items-center gap-1.5"><span class="cal-dot cal-sabado-letivo"></span> Sábado Letivo</div>
+                <div class="flex items-center gap-1.5"><span class="cal-dot cal-encontro"></span> Enc. Pedagógico</div>
+                <div class="flex items-center gap-1.5"><span class="cal-dot cal-inicio"></span> Início Aulas</div>
+                <div class="flex items-center gap-1.5"><span class="cal-dot cal-ferias"></span> Férias Docentes</div>
             </div>
         </div>
+        
+        <!-- Right Side: Chronological Timeline -->
+        <div class="w-full lg:w-80 shrink-0 self-stretch flex flex-col">
+            <div class="p-4 rounded-2xl glass-card h-full flex flex-col">
+                <h3 class="text-xs uppercase font-extrabold tracking-widest text-base-content/40 mb-3 pb-2 border-b border-base-200/50">Próximos Eventos</h3>
+                <div id="timeline-container" class="flex-1 overflow-y-auto max-h-[400px] pr-1 space-y-3">
+                    <div class="flex items-center justify-center h-32">
+                        <span class="loading loading-spinner loading-sm text-base-content/30"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 {% endblock %}
