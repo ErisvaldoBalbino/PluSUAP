@@ -1,6 +1,6 @@
 (function () {
-    const period_selector = document.getElementById('period-selector');
-    if (!period_selector) {
+    const selectors = document.querySelectorAll('.period-select-dropdown');
+    if (selectors.length === 0) {
         return;
     }
 
@@ -27,19 +27,26 @@
     }
 
     function render_periods(periods, selected_ano, selected_periodo) {
-        if (!periods || periods.length === 0) {
-            period_selector.innerHTML = '<option selected>Nenhum período encontrado</option>';
-            period_selector.disabled = true;
-            set_selected_period('', '');
-            return;
-        }
+        selectors.forEach((selector) => {
+            if (!periods || periods.length === 0) {
+                selector.innerHTML = '<option selected>Nenhum período encontrado</option>';
+                selector.disabled = true;
+                return;
+            }
 
-        period_selector.innerHTML = periods.map((period) => {
-            const is_selected = String(period.ano_letivo) === String(selected_ano)
-                && String(period.periodo_letivo) === String(selected_periodo);
-            return `<option value="${escape_html(period.ano_letivo)}|${escape_html(period.periodo_letivo)}" ${is_selected ? 'selected' : ''}>${escape_html(period.label)}</option>`;
-        }).join('');
-        period_selector.disabled = false;
+            selector.innerHTML = periods.map((period) => {
+                const is_selected = String(period.ano_letivo) === String(selected_ano)
+                    && String(period.periodo_letivo) === String(selected_periodo);
+                return `<option value="${escape_html(period.ano_letivo)}|${escape_html(period.periodo_letivo)}" ${is_selected ? 'selected' : ''}>${escape_html(period.label)}</option>`;
+            }).join('');
+            selector.disabled = false;
+        });
+
+        if (!periods || periods.length === 0) {
+            set_selected_period('', '');
+        } else {
+            set_selected_period(selected_ano, selected_periodo);
+        }
     }
 
     async function load_periods() {
@@ -50,7 +57,6 @@
 
         const data = await response.json();
         render_periods(data.periods, data.selected_ano, data.selected_periodo);
-        set_selected_period(data.selected_ano, data.selected_periodo);
     }
 
     async function persist_period_selection(ano_letivo, periodo_letivo) {
@@ -69,23 +75,37 @@
         }
     }
 
-    period_selector.addEventListener('change', async (event) => {
-        const [ano_letivo, periodo_letivo] = event.target.value.split('|');
-        period_selector.disabled = true;
-        try {
-            await persist_period_selection(ano_letivo, periodo_letivo);
-            set_selected_period(ano_letivo, periodo_letivo);
-            notify_period_change();
-        } catch (_error) {
-            await load_periods();
-        } finally {
-            period_selector.disabled = false;
-        }
+    selectors.forEach((selector) => {
+        selector.addEventListener('change', async (event) => {
+            const val = event.target.value;
+            const [ano_letivo, periodo_letivo] = val.split('|');
+            
+            // Disable all selectors during request
+            selectors.forEach((s) => s.disabled = true);
+            
+            try {
+                await persist_period_selection(ano_letivo, periodo_letivo);
+                set_selected_period(ano_letivo, periodo_letivo);
+                
+                // Sync values of all selectors
+                selectors.forEach((s) => {
+                    s.value = val;
+                });
+                
+                notify_period_change();
+            } catch (_error) {
+                await load_periods();
+            } finally {
+                selectors.forEach((s) => s.disabled = false);
+            }
+        });
     });
 
     window.plusuapPeriodReady = load_periods().catch(() => {
-        period_selector.innerHTML = '<option selected>Erro ao carregar períodos</option>';
-        period_selector.disabled = true;
+        selectors.forEach((selector) => {
+            selector.innerHTML = '<option selected>Erro ao carregar períodos</option>';
+            selector.disabled = true;
+        });
         set_selected_period('', '');
     });
 }());

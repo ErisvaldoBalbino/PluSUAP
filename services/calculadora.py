@@ -87,6 +87,7 @@ def process_diarios_faltas(diarios_data: List[Dict[str, Any]], grades_data: List
     processed = []
     
     global_ch_total = 0
+    global_aulas_cumpridas = 0
     global_faltas = 0
     global_dias_aulas = {}
     
@@ -105,9 +106,11 @@ def process_diarios_faltas(diarios_data: List[Dict[str, Any]], grades_data: List
                 matching_grade = grade
                 break
                 
+        aulas_cumpridas = 0
         if matching_grade:
             ch_total_aula = matching_grade.get('carga_horaria', ch_total_aula)
             qtd_faltas = matching_grade.get('numero_faltas', qtd_faltas)
+            aulas_cumpridas = matching_grade.get('carga_horaria_cumprida', 0)
             
         try:
             ch_total_aula = int(ch_total_aula)
@@ -115,11 +118,17 @@ def process_diarios_faltas(diarios_data: List[Dict[str, Any]], grades_data: List
             ch_total_aula = 0
             
         try:
+            aulas_cumpridas = int(aulas_cumpridas)
+        except (ValueError, TypeError):
+            aulas_cumpridas = 0
+            
+        try:
             qtd_faltas = int(qtd_faltas)
         except (ValueError, TypeError):
             qtd_faltas = 0
 
         global_ch_total += ch_total_aula
+        global_aulas_cumpridas += aulas_cumpridas
         global_faltas += qtd_faltas
         
         limite_faltas = int(ch_total_aula * 0.25)
@@ -138,6 +147,7 @@ def process_diarios_faltas(diarios_data: List[Dict[str, Any]], grades_data: List
             'descricao': descricao,
             'sigla': sigla,
             'ch_total_aula': ch_total_aula,
+            'aulas_cumpridas': aulas_cumpridas,
             'qtd_faltas': qtd_faltas,
             'limite_faltas': limite_faltas,
             'faltas_restantes': faltas_restantes,
@@ -159,6 +169,7 @@ def process_diarios_faltas(diarios_data: List[Dict[str, Any]], grades_data: List
     return {
         "summary": {
             "ch_total": global_ch_total,
+            "aulas_cumpridas": global_aulas_cumpridas,
             "faltas": global_faltas,
             "limite_faltas": global_limite,
             "faltas_restantes": global_restantes

@@ -241,12 +241,14 @@ class TestProcessDiariosFaltas:
         assert prog["qtd_faltas"] == 2
         assert prog["limite_faltas"] == 20  # 80 * 0.25
         assert prog["faltas_restantes"] == 18  # 20 - 2
+        assert prog["aulas_cumpridas"] == 0
 
     def test_summary_totals(self, sample_diarios):
         result = process_diarios_faltas(sample_diarios)
         assert result["summary"]["ch_total"] == 140  # 80 + 60
         assert result["summary"]["faltas"] == 3  # 2 + 1
         assert result["summary"]["limite_faltas"] == 35  # 140 * 0.25
+        assert result["summary"]["aulas_cumpridas"] == 0
 
     def test_dias_semana(self, sample_diarios):
         result = process_diarios_faltas(sample_diarios)
@@ -271,6 +273,8 @@ class TestProcessDiariosFaltas:
         # Values should come from the matching grade
         assert prog["ch_total_aula"] == 80
         assert prog["qtd_faltas"] == 2
+        assert prog["aulas_cumpridas"] == 40
+        assert result["summary"]["aulas_cumpridas"] == 100
 
     def test_faltas_restantes_never_negative(self):
         """Even with more faltas than the limit, faltas_restantes should be 0."""
