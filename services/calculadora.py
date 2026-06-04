@@ -20,17 +20,21 @@ def process_grades_data(grades_data: List[Dict[str, Any]]) -> List[Dict[str, Any
         
         if situacao == 'Cursando':
             if n1_val is not None and n2_val is None:
+                n2_needed = max((300.0 - 2.0 * n1_val) / 3.0, 0.0)
+                n2_needed_str = f"{n2_needed:.1f}" if n2_needed % 1 != 0 else f"{int(n2_needed)}"
                 if n1_val >= 60:
                     estado = "BOM"
-                    alerta = f"Precisa de {max((120 - n1_val), 0)} na N2 para aprovação direta."
+                    alerta = f"Precisa de {n2_needed_str} na N2 para aprovação direta."
                 else:
                     estado = "PERIGO"
-                    alerta = f"Cuidado! Precisa de {120 - n1_val} pontos na N2 para aprovação direta."
+                    alerta = f"Cuidado! Precisa de {n2_needed_str} pontos na N2 para aprovação direta."
             elif n1_val is not None and n2_val is not None:
-                media_atual = (n1_val + n2_val) / 2
+                media_atual = (2.0 * n1_val + 3.0 * n2_val) / 5.0
                 if media_atual < 60:
+                    af_needed = max(120.0 - media_atual, 0.0)
+                    af_needed_str = f"{af_needed:.1f}" if af_needed % 1 != 0 else f"{int(af_needed)}"
                     estado = "PERIGO"
-                    alerta = f"Em prova final. Precisa de {120 - media_atual} na AF."
+                    alerta = f"Em prova final. Precisa de {af_needed_str} na AF."
                 else:
                     estado = "OK"
                     

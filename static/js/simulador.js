@@ -83,12 +83,18 @@ const CARGA_HORARIA_MAXIMA = 1000;
         const maxLimit = Math.floor(total * 0.25);
         limite_faltas.value = String(maxLimit);
 
+        // Save current absences value to prevent the browser from resetting it to the midpoint of the new range
+        const currentFaltas = parse_number(faltas.value);
+
         // Adjust Absences slider boundaries to scale intelligently to double the presence limit or a base range
         const maxRange = total > 0 ? Math.max(maxLimit * 2, 10) : 40;
         faltas.max = String(maxRange);
         if (faltas_val) {
             faltas_val.max = String(maxRange);
         }
+
+        // Restore/clamp the absences value so the browser preserves it
+        faltas.value = String(Math.min(currentFaltas, maxRange));
         
         sync_range_indicators();
     }
@@ -111,6 +117,7 @@ const CARGA_HORARIA_MAXIMA = 1000;
 
         if (freq_perc < 75) {
             outcome_ring.innerHTML = 'RF';
+            outcome_ring.title = 'Reprovado por Faltas';
             outcome_ring.classList.add('bg-error/15', 'border-error', 'text-error');
             outcome_ring.style.boxShadow = '0 0 12px oklch(var(--er) / 0.4)';
             return;
@@ -118,14 +125,17 @@ const CARGA_HORARIA_MAXIMA = 1000;
 
         if (average >= MEDIA_APROVACAO) {
             outcome_ring.innerHTML = 'AP';
+            outcome_ring.title = 'Aprovado';
             outcome_ring.classList.add('bg-success/15', 'border-success', 'text-success');
             outcome_ring.style.boxShadow = '0 0 12px oklch(var(--su) / 0.4)';
         } else if (average >= MEDIA_FINAL) {
             outcome_ring.innerHTML = 'PF';
+            outcome_ring.title = 'Prova Final';
             outcome_ring.classList.add('bg-warning/15', 'border-warning', 'text-warning');
             outcome_ring.style.boxShadow = '0 0 12px oklch(var(--wa) / 0.4)';
         } else {
             outcome_ring.innerHTML = 'RN';
+            outcome_ring.title = 'Reprovado por Nota';
             outcome_ring.classList.add('bg-error/15', 'border-error', 'text-error');
             outcome_ring.style.boxShadow = '0 0 12px oklch(var(--er) / 0.4)';
         }
@@ -234,7 +244,7 @@ const CARGA_HORARIA_MAXIMA = 1000;
         
         nota_1.value = String(clean_grade_for_slider(grade.n1_limpa));
         nota_2.value = String(clean_grade_for_slider(grade.n2_limpa));
-        carga_horaria.value = String(grade.carga_horaria ?? '80');
+        carga_horaria.value = String(grade.carga_horaria_cumprida ?? grade.carga_horaria ?? '80');
         
         update_absence_limit();
         

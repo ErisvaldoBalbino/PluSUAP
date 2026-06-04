@@ -35,7 +35,7 @@ class TestProcessGradesData:
         result = process_grades_data(sample_grades)
         prog = next(r for r in result if r["disciplina"] == "Programação I")
         assert prog["estado_ui"] == "BOM"
-        assert "50.0 na N2" in prog["alerta"]
+        assert "53.3 na N2" in prog["alerta"]
 
     def test_cursando_only_n1_bad(self, sample_grades):
         """Cursando, N1 < 40, N2 missing → PERIGO status."""

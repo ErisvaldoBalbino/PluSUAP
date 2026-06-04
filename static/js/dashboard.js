@@ -26,18 +26,18 @@
 
     function render_status_badge(grade) {
         if (grade.estado_ui === 'BOM') {
-            return `<div class="badge bg-info/10 border border-info/30 text-info font-bold uppercase tracking-wider text-[10px] py-2.5 px-3">${escape_html(grade.alerta || '-')}</div>`;
+            return `<div class="badge h-auto bg-info/10 border border-info/30 text-info font-bold uppercase tracking-wider text-[10px] py-1.5 px-3 leading-tight whitespace-normal text-center max-w-[180px]">${escape_html(grade.alerta || '-')}</div>`;
         }
         if (grade.estado_ui === 'PERIGO') {
-            return `<div class="badge bg-warning/10 border border-warning/30 text-warning font-bold uppercase tracking-wider text-[10px] py-2.5 px-3 animate-pulse">${escape_html(grade.alerta || '-')}</div>`;
+            return `<div class="badge h-auto bg-warning/10 border border-warning/30 text-warning font-bold uppercase tracking-wider text-[10px] py-1.5 px-3 leading-tight whitespace-normal text-center max-w-[180px] animate-pulse">${escape_html(grade.alerta || '-')}</div>`;
         }
         if (grade.estado_ui === 'SUCESSO') {
-            return '<div class="badge bg-success/15 border border-success/30 text-success font-extrabold uppercase tracking-wider text-[10px] py-2.5 px-3">APROVADO</div>';
+            return '<div class="badge h-auto bg-success/15 border border-success/30 text-success font-extrabold uppercase tracking-wider text-[10px] py-1.5 px-3 leading-tight whitespace-normal text-center">APROVADO</div>';
         }
         if (grade.estado_ui === 'FALHA') {
-            return `<div class="badge bg-error/10 border border-error/30 text-error font-extrabold uppercase tracking-wider text-[10px] py-2.5 px-3">${escape_html(grade.alerta || 'REPROVADO')}</div>`;
+            return `<div class="badge h-auto bg-error/10 border border-error/30 text-error font-extrabold uppercase tracking-wider text-[10px] py-1.5 px-3 leading-tight whitespace-normal text-center max-w-[180px]">${escape_html(grade.alerta || 'REPROVADO')}</div>`;
         }
-        return `<div class="badge badge-outline border-base-300 text-base-content/65 font-bold uppercase tracking-wider text-[10px] py-2.5 px-3">${escape_html(grade.situacao || '-')}</div>`;
+        return `<div class="badge badge-outline h-auto border-base-300 text-base-content/65 font-bold uppercase tracking-wider text-[10px] py-1.5 px-3 leading-tight whitespace-normal text-center max-w-[180px]">${escape_html(grade.situacao || '-')}</div>`;
     }
 
     function render_grade_cell(value) {
@@ -77,7 +77,7 @@
         });
 
         const total_freq = total_aulas > 0
-            ? Math.min(Math.max(Math.round(((total_aulas - total_faltas) / total_aulas) * 100), 0), 100)
+            ? Math.min(Math.max(((total_aulas - total_faltas) / total_aulas) * 100, 0), 100)
             : 100;
 
         footer_ch.textContent = `${total_ch}h`;
@@ -85,7 +85,7 @@
         footer_faltas.textContent = total_faltas;
         footer_freq.innerHTML = `
             <div class="flex flex-col gap-1 items-center justify-center">
-                <span class="font-extrabold ${total_freq >= 75 ? 'text-success' : 'text-error'}">${total_freq}%</span>
+                <span class="font-extrabold ${total_freq >= 75 ? 'text-success' : 'text-error'}">${total_freq.toFixed(1)}%</span>
                 <progress class="progress ${total_freq >= 75 ? 'progress-success' : 'progress-error'} w-16 h-1" value="${total_freq}" max="100"></progress>
             </div>
         `;
