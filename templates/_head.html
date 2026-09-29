@@ -1,0 +1,38 @@
+<script src="/static/js/theme.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    // Semantic colors resolve to the CSS variables defined in style.css (RGB channels),
+    // so utilities like bg-base-100, text-primary and border-base-300/40 follow the theme.
+    const token = (v) => `rgb(var(--${v}) / <alpha-value>)`;
+    tailwind.config = {
+        theme: {
+            extend: {
+                fontFamily: {
+                    display: ['Bricolage Grotesque', 'Inter', 'system-ui', 'sans-serif'],
+                    sans: ['Inter', 'system-ui', 'sans-serif'],
+                },
+                colors: {
+                    primary: { DEFAULT: token('p'), content: token('pc') },
+                    secondary: { DEFAULT: token('s'), content: token('sc') },
+                    accent: { DEFAULT: token('a'), content: token('ac') },
+                    neutral: { DEFAULT: token('n'), content: token('nc') },
+                    success: { DEFAULT: token('su'), content: token('suc') },
+                    warning: { DEFAULT: token('wa'), content: token('wac') },
+                    error: { DEFAULT: token('er'), content: token('erc') },
+                    info: { DEFAULT: token('in'), content: token('inc') },
+                    'base-100': token('b1'),
+                    'base-200': token('b2'),
+                    'base-300': token('b3'),
+                    'base-content': token('bc'),
+                },
+            },
+        },
+    };
+</script>
+<link href="/static/css/style.css" rel="stylesheet" type="text/css" />

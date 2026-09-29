@@ -113,13 +113,13 @@
 
         let html = `
             <div class="flex items-center justify-between mb-5 px-1">
-                <button id="cal-prev" class="btn btn-sm btn-ghost btn-circle border border-base-300/40 bg-base-100/50 hover:bg-base-300 transition">
+                <button id="cal-prev" class="btn btn-sm btn-ghost btn-circle border border-base-300/40 hover:bg-base-300 transition">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
                     </svg>
                 </button>
                 <h3 class="font-extrabold text-base md:text-lg text-base-content">${MONTH_NAMES[currentMonth]} ${currentYear}</h3>
-                <button id="cal-next" class="btn btn-sm btn-ghost btn-circle border border-base-300/40 bg-base-100/50 hover:bg-base-300 transition">
+                <button id="cal-next" class="btn btn-sm btn-ghost btn-circle border border-base-300/40 hover:bg-base-300 transition">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
                     </svg>
@@ -224,32 +224,18 @@
             return;
         }
 
-        timelineContainer.innerHTML = upcoming.map(ev => {
-            const todayBadge = ev.isToday ? '<span class="badge badge-primary font-black text-[8px] uppercase tracking-wider py-1 px-1.5 rounded shadow shadow-primary/20 text-white">Hoje</span>' : '';
-            
-            // Build bullet color accent class
-            let bulletColor = 'bg-base-content/40';
-            if (ev.cls === 'cal-feriado') bulletColor = 'bg-error shadow-[0_0_8px_oklch(var(--er)/0.5)]';
-            else if (ev.cls === 'cal-facultativo') bulletColor = 'bg-warning shadow-[0_0_8px_oklch(var(--wa)/0.5)]';
-            else if (ev.cls === 'cal-prova') bulletColor = 'bg-purple-500 shadow-[0_0_8px_oklch(50%_0.18_290/0.5)]';
-            else if (ev.cls === 'cal-sabado-letivo') bulletColor = 'bg-cyan-500 shadow-[0_0_8px_oklch(65%_0.16_185/0.5)]';
-            else if (ev.cls === 'cal-encontro') bulletColor = 'bg-indigo-500 shadow-[0_0_8px_oklch(50%_0.16_250/0.5)]';
-            else if (ev.cls === 'cal-inicio') bulletColor = 'bg-primary shadow-[0_0_8px_oklch(var(--p)/0.5)]';
-            else if (ev.cls === 'cal-ferias') bulletColor = 'bg-yellow-600 shadow-[0_0_8px_oklch(70%_0.08_85/0.5)]';
+        // Only the next few: the full calendar is one click away.
+        timelineContainer.innerHTML = upcoming.slice(0, 5).map(ev => {
+            const todayBadge = ev.isToday ? '<span class="badge badge-primary badge-sm">Hoje</span>' : '';
+            const dot = ev.cls ? `<span class="cal-dot ${ev.cls} shrink-0"></span>` : '<span class="cal-dot shrink-0" style="background:rgb(var(--bc)/.3)"></span>';
 
             return `
-                <div class="flex gap-3.5 items-start group pl-1">
-                    <!-- Event colored bullet -->
-                    <div class="w-2.5 h-2.5 rounded-full ${bulletColor} mt-1.5 shrink-0 relative z-10">
-                        ${ev.isToday ? `<div class="absolute inset-0 rounded-full animate-ping opacity-75 ${bulletColor}"></div>` : ''}
-                    </div>
-                    <!-- Timeline Card -->
-                    <div class="flex-1 rounded-xl p-3 bg-base-200/40 hover:bg-base-200/80 border border-base-300/30 transition duration-200">
-                        <div class="flex items-center justify-between gap-1 mb-1">
-                            <span class="text-[9px] font-black text-base-content/45 tracking-wider uppercase">${ev.date}</span>
-                            ${todayBadge}
-                        </div>
-                        <h4 class="text-xs font-bold text-base-content/85 leading-snug">${escape_html(ev.label)}</h4>
+                <div class="next-event">
+                    <div class="w-20 shrink-0 text-[11px] font-extrabold uppercase tracking-wide text-base-content/50 leading-tight">${ev.date}</div>
+                    <div class="flex-1 min-w-0 flex items-center gap-2">
+                        ${dot}
+                        <span class="text-sm font-semibold leading-snug">${escape_html(ev.label)}</span>
+                        ${todayBadge}
                     </div>
                 </div>
             `;

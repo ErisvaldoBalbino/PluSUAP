@@ -1,85 +1,59 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="mb-8">
-    <h1 class="page-heading">Requisitos de Conclusão</h1>
+<div class="mb-6">
+    <p class="page-eyebrow">Curso</p>
+    <h1 class="page-heading">Requisitos de conclusão</h1>
+    <p class="page-subtitle">O que você já cumpriu e o que ainda falta para se formar.</p>
 </div>
 
-<!-- Premium Global Course Progress Card -->
-<div class="card glass-card glass-panel-glow bg-base-100/30 border border-base-300/40 p-6 mb-8 animate-fade-in">
-    <h2 class="font-extrabold text-xl text-base-content mb-6">Progresso Geral do Curso</h2>
-
-    <div class="flex flex-col sm:flex-row items-center gap-8">
-        <!-- Radial gauge with neon glow halo -->
-        <div class="relative flex items-center justify-center p-5 bg-base-200/25 rounded-2xl border border-base-300/30 shrink-0 w-full sm:w-auto">
-            <div id="progress-radial" class="radial-progress text-primary transition-all duration-1000 font-black text-2xl" style="--value: 0; --size: 8.5rem; --thickness: 10px;" role="progressbar">
-                <span id="progress-percent">0%</span>
-            </div>
-            <!-- Glow background -->
-            <div class="absolute inset-0 -z-10 bg-primary/5 rounded-full blur-xl animate-pulse"></div>
+<!-- Overall progress -->
+<section class="card p-6 md:p-8 mb-6 animate-fade-in">
+    <div class="flex flex-col md:flex-row md:items-end gap-6 md:gap-10">
+        <div class="shrink-0">
+            <div class="tiny-label mb-1">Concluído</div>
+            <div id="progress-percent" class="font-display font-extrabold text-primary" style="font-size:4.5rem;line-height:.95;letter-spacing:-0.05em">0%</div>
         </div>
 
-        <!-- Progress Description and stats details -->
-        <div class="flex-1 w-full min-w-0">
-            <div class="grid grid-cols-2 gap-4 mb-4">
-                <div class="bg-base-200/40 border border-base-300/25 rounded-2xl p-4 flex items-center gap-3">
-                    <div class="p-2.5 bg-primary/10 rounded-xl text-primary shrink-0">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <div>
-                        <div class="text-[9px] uppercase font-black tracking-wider text-base-content/40">Integralizado</div>
-                        <div id="progress-cumprida" class="text-lg font-black text-base-content">0h</div>
-                    </div>
+        <div class="flex-1 min-w-0">
+            <div class="flex items-baseline justify-between gap-4 mb-2">
+                <div>
+                    <span id="progress-cumprida" class="font-display text-2xl font-extrabold">0h</span>
+                    <span class="text-sm font-semibold text-base-content/50"> integralizadas de </span>
+                    <span id="progress-esperada" class="font-display text-2xl font-extrabold">0h</span>
                 </div>
-                
-                <div class="bg-base-200/40 border border-base-300/25 rounded-2xl p-4 flex items-center gap-3">
-                    <div class="p-2.5 bg-neutral/15 rounded-xl text-base-content/70 shrink-0">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                        </svg>
-                    </div>
-                    <div>
-                        <div class="text-[9px] uppercase font-black tracking-wider text-base-content/40">Total Esperado</div>
-                        <div id="progress-esperada" class="text-lg font-black text-base-content">0h</div>
-                    </div>
-                </div>
+                <span id="progress-bar-percentage-label" class="text-xs font-bold text-base-content/45 hidden sm:inline">0% Concluído</span>
             </div>
-
-            <div class="flex justify-end items-center text-xs font-bold text-base-content/50 px-0.5 mb-2">
-                <span id="progress-bar-percentage-label">0% Concluído</span>
-            </div>
-            
-            <!-- Sleek custom glowing horizontal progress bar container -->
-            <div class="w-full bg-base-300/45 rounded-full h-3 overflow-hidden">
-                <div id="progress-bar-fill" class="bg-gradient-to-r from-primary to-accent h-full w-0 transition-all duration-1000 ease-out rounded-full" style="box-shadow: 0 0 10px oklch(var(--p) / 0.4)"></div>
+            <div class="w-full bg-base-content/10 rounded-full h-3 overflow-hidden">
+                <div id="progress-bar-fill" class="bg-primary h-full w-0 transition-all duration-1000 ease-out rounded-full"></div>
             </div>
         </div>
     </div>
-</div>
+</section>
 
-<!-- Course Requirement Card Breakdown -->
-<h2 class="text-lg font-black mb-5 flex items-center gap-2 text-base-content">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-    </svg>
-    Categorias Acadêmicas Obrigatórias
-</h2>
-
-<div id="requisitos-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in">
-    {% for _ in range(4) %}
-    <div class="card glass-card p-6 border border-base-300/40">
-        <span class="skeleton h-5 w-2/3 inline-block rounded-md"></span>
-        <span class="skeleton h-3 w-full inline-block mt-4 rounded-md"></span>
-        <div class="grid grid-cols-3 gap-2 mt-4">
-            <span class="skeleton h-8 w-full inline-block rounded-lg"></span>
-            <span class="skeleton h-8 w-full inline-block rounded-lg"></span>
-            <span class="skeleton h-8 w-full inline-block rounded-lg"></span>
-        </div>
+<!-- Categories -->
+<section class="card overflow-hidden animate-fade-in">
+    <div class="panel-head">
+        <h2 class="section-title">Categorias</h2>
+        <span class="text-xs font-semibold text-base-content/50">O que mais falta primeiro</span>
     </div>
-    {% endfor %}
-</div>
+    <div class="req-head tiny-label">
+        <div>Categoria</div>
+        <div>Progresso</div>
+        <div>Cumprida / esperada</div>
+        <div>Falta</div>
+    </div>
+    <div id="requisitos-grid">
+        {% for _ in range(5) %}
+        <div class="req-row">
+            <div><span class="skeleton h-5 w-2/3"></span></div>
+            <div class="req-bar"><span class="skeleton h-3 w-full"></span></div>
+            <div class="cell"><span class="skeleton h-4 w-16"></span></div>
+            <div class="cell"><span class="skeleton h-4 w-10"></span></div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
 {% endblock %}
 
 {% block page_scripts %}

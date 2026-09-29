@@ -6,10 +6,11 @@ from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
 from dotenv import load_dotenv
 
+# Precisa rodar antes de importar o cliente SUAP, que lê as variáveis no import.
+load_dotenv()
+
 from client.suap import suap_api, SUAPAuthError
 from services.calculadora import process_grades_data, calculate_summary, process_diarios_faltas
-
-load_dotenv()
 
 app = FastAPI(title="PluSUAP")
 
@@ -60,7 +61,7 @@ def save_selected_period(request: Request, ano_letivo: str, periodo_letivo: str)
 async def page_login(request: Request):
     if get_token(request):
         return RedirectResponse("/")
-    return templates.TemplateResponse("login.html", {"request": request, "title": "Login Simplificado"})
+    return templates.TemplateResponse("login.html", {"request": request, "title": "Entrar"})
 
 @app.get("/auth/suap")
 async def login_suap():

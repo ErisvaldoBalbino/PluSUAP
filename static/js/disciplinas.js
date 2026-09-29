@@ -17,37 +17,45 @@
 
     function render_loading() {
         list_el.innerHTML = Array.from({ length: 4 }).map(() => `
-            <div class="card glass-card p-6 border border-base-300/40">
-                <span class="skeleton h-6 w-3/4 inline-block rounded-md"></span>
-                <span class="skeleton h-4 w-1/2 inline-block mt-3 rounded-md"></span>
-                <div class="grid grid-cols-3 gap-3 mt-4">
-                    <span class="skeleton h-10 w-full inline-block rounded-xl"></span>
-                    <span class="skeleton h-10 w-full inline-block rounded-xl"></span>
-                    <span class="skeleton h-10 w-full inline-block rounded-xl"></span>
-                </div>
+            <div class="subject-row" data-state="NEUTRO">
+                <div class="subject-main"><span class="skeleton h-5 w-2/3"></span></div>
+                <div class="cell"><span class="skeleton h-6 w-10"></span></div>
+                <div class="cell"><span class="skeleton h-4 w-8"></span></div>
+                <div class="cell"><span class="skeleton h-4 w-10"></span></div>
+                <div class="cell"><span class="skeleton h-7 w-full"></span></div>
             </div>
         `).join('');
     }
 
     function render_error(message) {
-        list_el.innerHTML = `
-            <div class="col-span-full text-center py-16 glass-card bg-error/5 border border-error/20 rounded-2xl text-error font-extrabold text-sm max-w-md mx-auto my-6 animate-fade-in">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mx-auto mb-3 text-error" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
-                ${escape_html(message)}
-            </div>
-        `;
+        list_el.innerHTML = `<div class="p-10 text-center text-error font-bold text-sm">${escape_html(message)}</div>`;
+    }
+
+    function state_of(situacao) {
+        const rotulo = (situacao && situacao.rotulo) ? situacao.rotulo : String(situacao ?? '');
+        const s = rotulo.toLowerCase();
+        if (s.includes('aprovado')) return 'SUCESSO';
+        if (s.includes('reprovado')) return 'FALHA';
+        if (s.includes('trancad')) return 'PERIGO';
+        return 'NEUTRO';
+    }
+
+    function score_tone(value) {
+        const num = parseFloat(String(value).replace(',', '.'));
+        if (isNaN(num)) return 'text-base-content/30';
+        if (num >= 70) return 'text-success';
+        if (num >= 40) return 'text-warning';
+        return 'text-error';
     }
 
     function get_situacao_badge(situacao) {
         const rotulo = (situacao && situacao.rotulo) ? situacao.rotulo : String(situacao ?? '');
         const s = rotulo.toLowerCase();
-        if (s.includes('aprovado')) return { cls: 'bg-success/10 text-success border-success/20', label: rotulo };
-        if (s.includes('reprovado')) return { cls: 'bg-error/10 text-error border-error/20', label: rotulo };
-        if (s.includes('cursando')) return { cls: 'bg-info/10 text-info border-info/20', label: rotulo };
-        if (s.includes('trancad')) return { cls: 'bg-warning/10 text-warning border-warning/20', label: rotulo };
-        return { cls: 'bg-base-200/50 text-base-content/70 border-base-300/40', label: rotulo || 'N/I' };
+        if (s.includes('aprovado')) return { cls: 'bg-success/15 text-success', label: rotulo };
+        if (s.includes('reprovado')) return { cls: 'bg-error/12 text-error', label: rotulo };
+        if (s.includes('cursando')) return { cls: 'bg-info/12 text-info', label: rotulo };
+        if (s.includes('trancad')) return { cls: 'bg-warning/15 text-warning', label: rotulo };
+        return { cls: 'bg-base-content/8 text-base-content/60', label: rotulo || 'N/I' };
     }
 
     function get_media(medias) {
@@ -58,57 +66,59 @@
 
     function render_disciplinas(disciplinas) {
         if (!disciplinas || disciplinas.length === 0) {
-            list_el.innerHTML = `
-                <div class="col-span-full text-center py-16 glass-card bg-base-100/20 border border-base-300/40 rounded-2xl text-base-content/50 font-bold">
-                    Nenhuma disciplina encontrada neste período.
-                </div>
-            `;
+            list_el.innerHTML = '<div class="p-10 text-center text-base-content/50 font-semibold">Nenhuma disciplina encontrada neste período.</div>';
             return;
         }
 
         list_el.innerHTML = disciplinas.map((d) => {
             const id = d.id || '';
-            const nome = escape_html(d.descricao || 'Sem nome');
+            const raw_nome = d.descricao || 'Sem nome';
             const badge = get_situacao_badge(d.situacao);
+            const state = state_of(d.situacao);
             const media = get_media(d.medias);
-            const faltas = d.qtd_faltas != null ? d.qtd_faltas : '-';
-            const ch = d.ch_total_aula != null ? `${d.ch_total_aula}h` : '-';
-            const freq = d.frequencia != null ? `${Math.round(d.frequencia)}%` : '-';
+            const faltas = d.qtd_faltas != null ? d.qtd_faltas : '–';
+            const ch = d.ch_total_aula != null ? `${d.ch_total_aula}h` : '';
+            const freq_num = d.frequencia != null ? Math.round(d.frequencia) : null;
+            const media_txt = media === '-' ? '–' : escape_html(media);
+            const code_match = raw_nome.match(/^([A-Z]{2,}[A-Z0-9.]*\d[A-Z0-9.]*)\s*-\s*(.+)$/);
+            const code = code_match ? code_match[1] : '';
+            const title = code_match ? code_match[2] : raw_nome;
+            const meta = [code, state === 'NEUTRO' ? badge.label : '', ch].filter(Boolean).join(' · ');
 
             return `
-            <div class="card glass-card card-hoverable bg-base-100/25 p-5 border border-base-300/40 flex flex-col justify-between">
-                <div>
-                    <div class="flex justify-between items-start gap-2 mb-3">
-                        <span class="badge ${badge.cls} font-extrabold text-[9px] uppercase border px-2.5 py-0.5 rounded-md">${escape_html(badge.label)}</span>
-                        <span class="text-[10px] font-black text-base-content/40 uppercase tracking-widest">${ch}</span>
+            <div class="subject-row" data-state="${state}">
+                <div class="subject-main">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <h3 class="subject-name" title="${escape_html(raw_nome)}">${escape_html(title)}</h3>
+                        ${state === 'NEUTRO' ? '' : `<span class="badge shrink-0 uppercase tracking-wider text-[10px] font-extrabold ${badge.cls}">${escape_html(badge.label)}</span>`}
                     </div>
-                    <h2 class="font-extrabold text-base text-base-content leading-snug mb-4 truncate-two-lines" title="${nome}">${nome}</h2>
-                    
-                    <div class="grid grid-cols-3 gap-3 text-xs mb-4">
-                        <div class="bg-base-200/35 border border-base-300/20 rounded-xl p-2.5 text-center flex flex-col justify-center">
-                            <span class="text-[9px] uppercase font-bold text-base-content/40 mb-0.5">Média</span>
-                            <span class="font-black text-sm text-primary">${media}</span>
-                        </div>
-                        <div class="bg-base-200/35 border border-base-300/20 rounded-xl p-2.5 text-center flex flex-col justify-center">
-                            <span class="text-[9px] uppercase font-bold text-base-content/40 mb-0.5">Faltas</span>
-                            <span class="font-black text-sm text-error">${faltas}</span>
-                        </div>
-                        <div class="bg-base-200/35 border border-base-300/20 rounded-xl p-2.5 text-center flex flex-col justify-center">
-                            <span class="text-[9px] uppercase font-bold text-base-content/40 mb-0.5">Freq.</span>
-                            <span class="font-black text-sm ${parseFloat(freq) >= 75 || freq === '-' ? 'text-success' : 'text-error'}">${freq}</span>
-                        </div>
-                    </div>
+                    ${meta ? `<div class="subject-meta">${escape_html(meta)}</div>` : ''}
                 </div>
-                ${id ? `<div class="card-actions justify-end mt-2">
-                    <button class="btn btn-sm btn-outline border-base-300/50 hover:bg-primary hover:text-primary-content hover:border-transparent font-extrabold rounded-xl w-full text-xs shadow-sm" onclick="window._openEtapas(${id}, '${nome.replace(/'/g, "\\'")}')">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                        Detalhar Notas da Disciplina
-                    </button>
-                </div>` : ''}
+                <div class="cell">
+                    <span class="cell-label">Média</span>
+                    <span class="cell-media ${score_tone(media)}">${media_txt}</span>
+                </div>
+                <div class="cell">
+                    <span class="cell-label">Faltas</span>
+                    <span class="cell-n">${faltas}</span>
+                </div>
+                <div class="cell">
+                    <span class="cell-label">Freq.</span>
+                    <span class="cell-n ${freq_num === null || freq_num >= 75 ? 'text-success' : 'text-error'}">${freq_num === null ? '–' : `${freq_num}%`}</span>
+                </div>
+                <div class="cell">
+                    ${id ? `<button type="button" class="btn btn-outline btn-sm w-full" data-etapas-id="${id}" data-etapas-nome="${escape_html(raw_nome)}">Ver notas</button>` : ''}
+                </div>
             </div>
             `;
         }).join('');
     }
+
+    // Delegated click instead of inline onclick, so names with quotes cannot break the markup.
+    list_el.addEventListener('click', (event) => {
+        const btn = event.target.closest('[data-etapas-id]');
+        if (btn) window._openEtapas(btn.dataset.etapasId, btn.dataset.etapasNome);
+    });
 
     window._openEtapas = async function (disciplina_id, nome) {
         modal_title.textContent = nome;

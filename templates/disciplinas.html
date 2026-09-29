@@ -2,31 +2,39 @@
 
 {% block content %}
 <div class="mb-8">
-    <h1 class="page-heading">Minhas Disciplinas</h1>
+    <p class="page-eyebrow">Período atual</p>
+    <h1 class="page-heading">Minhas disciplinas</h1>
     <p class="page-subtitle">Disciplinas matriculadas no período selecionado</p>
 </div>
 
-<div id="disciplinas-list" class="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in">
-    {% for _ in range(4) %}
-    <div class="card glass-card p-6 border border-base-300/40">
-        <span class="skeleton h-6 w-3/4 inline-block rounded-md"></span>
-        <span class="skeleton h-4 w-1/2 inline-block mt-3 rounded-md"></span>
-        <div class="grid grid-cols-3 gap-3 mt-4">
-            <span class="skeleton h-10 w-full inline-block rounded-xl"></span>
-            <span class="skeleton h-10 w-full inline-block rounded-xl"></span>
-            <span class="skeleton h-10 w-full inline-block rounded-xl"></span>
-        </div>
+<section class="card subject-list animate-fade-in">
+    <div class="subject-head tiny-label">
+        <div>Disciplina</div>
+        <div>Média</div>
+        <div>Faltas</div>
+        <div>Freq.</div>
+        <div></div>
     </div>
-    {% endfor %}
-</div>
+    <div id="disciplinas-list">
+        {% for _ in range(4) %}
+        <div class="subject-row" data-state="NEUTRO">
+            <div class="subject-main"><span class="skeleton h-5 w-2/3"></span></div>
+            <div class="cell"><span class="skeleton h-6 w-10"></span></div>
+            <div class="cell"><span class="skeleton h-4 w-8"></span></div>
+            <div class="cell"><span class="skeleton h-4 w-10"></span></div>
+            <div class="cell"><span class="skeleton h-7 w-full"></span></div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
 
 <!-- Stages Popup Cockpit -->
 <dialog id="etapas-modal" class="modal modal-bottom sm:modal-middle transition-all duration-300">
-    <div class="modal-box w-11/12 max-w-2xl glass-card bg-base-100/90 border border-base-300/60 p-6 shadow-2xl relative">
+    <div class="modal-box w-11/12 max-w-2xl p-6 relative">
         <form method="dialog">
             <button class="btn btn-sm btn-circle btn-ghost absolute right-4 top-4 font-black">✕</button>
         </form>
-        <h3 id="etapas-modal-title" class="font-extrabold text-xl text-base-content mb-4 pr-8 border-b border-base-300/30 pb-3">Etapas Acadêmicas</h3>
+        <h3 id="etapas-modal-title" class="section-title mb-4 pr-10 border-b border-base-300 pb-3">Etapas Acadêmicas</h3>
         <div id="etapas-modal-body" class="space-y-6 max-h-[60vh] overflow-y-auto pr-1">
             <div class="flex justify-center py-8">
                 <span class="loading loading-spinner loading-md text-primary"></span>

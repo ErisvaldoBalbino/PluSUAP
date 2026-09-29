@@ -48,7 +48,7 @@ const CARGA_HORARIA_MAXIMA = 1000;
         if (existing) existing.remove();
 
         const alert = document.createElement('div');
-        alert.className = `alert alert-${type} simulador-alert fixed top-4 right-4 z-[9999] shadow-lg max-w-sm rounded-xl border border-${type}/30 bg-${type}/10 backdrop-blur-md`;
+        alert.className = `alert alert-${type} simulador-alert fixed top-4 right-4 z-[9999] max-w-sm rounded-xl border border-${type}/30 bg-${type}/10 backdrop-blur-md`;
         alert.innerHTML = `<span class="font-bold text-xs">${message}</span>`;
         document.body.appendChild(alert);
         setTimeout(() => alert.remove(), 3000);
@@ -116,28 +116,32 @@ const CARGA_HORARIA_MAXIMA = 1000;
         outcome_ring.className = 'w-12 h-12 rounded-full border-4 flex items-center justify-center font-black text-sm transition-all duration-300 ';
 
         if (freq_perc < 75) {
+            resultados.dataset.outcome = 'rf';
             outcome_ring.innerHTML = 'RF';
             outcome_ring.title = 'Reprovado por Faltas';
             outcome_ring.classList.add('bg-error/15', 'border-error', 'text-error');
-            outcome_ring.style.boxShadow = '0 0 12px oklch(var(--er) / 0.4)';
+            outcome_ring.style.boxShadow = '0 0 12px rgb(var(--er) / 0.4)';
             return;
         }
 
         if (average >= MEDIA_APROVACAO) {
+            resultados.dataset.outcome = 'ap';
             outcome_ring.innerHTML = 'AP';
             outcome_ring.title = 'Aprovado';
             outcome_ring.classList.add('bg-success/15', 'border-success', 'text-success');
-            outcome_ring.style.boxShadow = '0 0 12px oklch(var(--su) / 0.4)';
+            outcome_ring.style.boxShadow = '0 0 12px rgb(var(--su) / 0.4)';
         } else if (average >= MEDIA_FINAL) {
+            resultados.dataset.outcome = 'pf';
             outcome_ring.innerHTML = 'PF';
             outcome_ring.title = 'Prova Final';
             outcome_ring.classList.add('bg-warning/15', 'border-warning', 'text-warning');
-            outcome_ring.style.boxShadow = '0 0 12px oklch(var(--wa) / 0.4)';
+            outcome_ring.style.boxShadow = '0 0 12px rgb(var(--wa) / 0.4)';
         } else {
+            resultados.dataset.outcome = 'rn';
             outcome_ring.innerHTML = 'RN';
             outcome_ring.title = 'Reprovado por Nota';
             outcome_ring.classList.add('bg-error/15', 'border-error', 'text-error');
-            outcome_ring.style.boxShadow = '0 0 12px oklch(var(--er) / 0.4)';
+            outcome_ring.style.boxShadow = '0 0 12px rgb(var(--er) / 0.4)';
         }
     }
 
@@ -184,14 +188,14 @@ const CARGA_HORARIA_MAXIMA = 1000;
         }
 
         pode_faltar.textContent = remaining >= 0 ? `${remaining} aula(s)` : 'Limite excedido';
-        pode_faltar.className = remaining >= 0 ? 'font-extrabold text-xl text-base-content' : 'font-extrabold text-lg text-error';
+        pode_faltar.className = `font-display font-extrabold text-2xl leading-none ${remaining >= 0 ? '' : 'text-error'}`;
 
         frequencia_atual.textContent = `${safe_freq.toFixed(1)}%`;
-        frequencia_atual.className = safe_freq >= 75 ? 'font-extrabold text-xl text-success' : 'font-extrabold text-xl text-error';
+        frequencia_atual.className = `font-display font-extrabold text-2xl leading-none ${safe_freq >= 75 ? 'text-success' : 'text-error'}`;
 
         if (freq_progress) {
             freq_progress.value = safe_freq;
-            freq_progress.className = `progress ${safe_freq >= 75 ? 'progress-success' : 'progress-error'} w-full h-1 mt-3`;
+            freq_progress.className = `progress ${safe_freq >= 75 ? 'progress-success' : 'progress-error'} mt-3`;
         }
 
         resultado_hint.classList.add('hidden');

@@ -1,189 +1,132 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="mb-8">
-    <h1 class="page-heading">Simulador de Desempenho</h1>
+<div class="mb-6">
+    <p class="page-eyebrow">Ferramenta</p>
+    <h1 class="page-heading">Simulador de desempenho</h1>
+    <p class="page-subtitle">Mexa nas notas e nas faltas e veja na hora se você passa.</p>
 </div>
 
-<!-- 2-Column Workspace Layout -->
-<div class="grid grid-cols-1 xl:grid-cols-[1.2fr_1fr] gap-8 items-start animate-fade-in">
-    
-    <!-- Left Column: Interactive Inputs Panel -->
-    <div class="card glass-card glass-panel-glow bg-base-100/30 p-6 border border-base-300/40">
-        <h2 class="font-extrabold text-lg text-base-content mb-6">Ajustes da Simulação</h2>
+<div class="grid grid-cols-1 lg:grid-cols-[1.15fr_1fr] gap-6 items-start animate-fade-in">
 
-        <!-- Skeleton Form Loader -->
+    <!-- Inputs -->
+    <section class="card p-6">
+        <h2 class="section-title mb-5">Ajustes</h2>
+
         <div id="simuladorFormLoading" class="space-y-5 hidden mb-3">
-            <span class="skeleton h-12 w-full block rounded-lg"></span>
-            <span class="skeleton h-14 w-full block rounded-lg"></span>
-            <span class="skeleton h-14 w-full block rounded-lg"></span>
-            <span class="skeleton h-12 w-full block rounded-lg"></span>
+            <span class="skeleton h-12 w-full block"></span>
+            <span class="skeleton h-14 w-full block"></span>
+            <span class="skeleton h-14 w-full block"></span>
+            <span class="skeleton h-12 w-full block"></span>
         </div>
 
         <form id="simulador-form" class="flex flex-col gap-6" onsubmit="event.preventDefault();">
-            <!-- Subject Dropdown -->
             <div class="form-control w-full">
-                <label class="label px-0 pb-1.5">
-                    <span class="label-text font-bold text-sm">Disciplina Acadêmica</span>
+                <label class="label px-0 pb-1.5" for="disciplinaSelect">
+                    <span class="label-text">Preencher com uma disciplina</span>
+                    <span class="text-xs font-semibold text-base-content/40">opcional</span>
                 </label>
-                <select id="disciplinaSelect" class="select select-bordered select-md w-full font-bold bg-base-100 border-base-300/60 rounded-xl text-sm">
-                    <option value="">Selecione uma disciplina para preencher</option>
+                <select id="disciplinaSelect" class="select w-full font-bold">
+                    <option value="">Selecione uma disciplina</option>
                 </select>
             </div>
 
-            <!-- Notes Section with Range Sliders -->
-            <div class="divider text-[10px] uppercase tracking-widest text-base-content/30 font-bold my-2">Notas</div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Note 1 (N1) Slider -->
-                <div class="form-control w-full">
-                    <label class="label px-0 pb-1.5">
-                        <span class="label-text font-bold text-xs text-base-content/70">Nota 1 (N1)</span>
-                    </label>
-                    <div class="flex items-center gap-3 w-full">
-                        <input id="nota1" type="range" min="0" max="100" step="1" value="0" class="glass-range flex-1" />
-                        <input id="nota1-val" type="number" min="0" max="100" step="1" value="0" class="input input-bordered input-sm w-16 text-center font-extrabold text-primary bg-base-100 rounded-lg border-base-300 focus:border-primary/50" />
+            <div>
+                <div class="tiny-label mb-3">Notas</div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div class="form-control w-full">
+                        <label class="label px-0 pb-1.5" for="nota1-val"><span class="label-text">Nota 1 (N1)</span></label>
+                        <div class="flex items-center gap-3 w-full">
+                            <input id="nota1" type="range" min="0" max="100" step="1" value="0" class="glass-range flex-1" />
+                            <input id="nota1-val" type="number" min="0" max="100" step="1" value="0" class="input input-sm w-16 text-center font-extrabold text-primary" />
+                        </div>
                     </div>
-                </div>
-
-                <!-- Note 2 (N2) Slider -->
-                <div class="form-control w-full">
-                    <label class="label px-0 pb-1.5">
-                        <span class="label-text font-bold text-xs text-base-content/70">Nota 2 (N2)</span>
-                    </label>
-                    <div class="flex items-center gap-3 w-full">
-                        <input id="nota2" type="range" min="0" max="100" step="1" value="0" class="glass-range flex-1" />
-                        <input id="nota2-val" type="number" min="0" max="100" step="1" value="0" class="input input-bordered input-sm w-16 text-center font-extrabold text-primary bg-base-100 rounded-lg border-base-300 focus:border-primary/50" />
+                    <div class="form-control w-full">
+                        <label class="label px-0 pb-1.5" for="nota2-val"><span class="label-text">Nota 2 (N2)</span></label>
+                        <div class="flex items-center gap-3 w-full">
+                            <input id="nota2" type="range" min="0" max="100" step="1" value="0" class="glass-range flex-1" />
+                            <input id="nota2-val" type="number" min="0" max="100" step="1" value="0" class="input input-sm w-16 text-center font-extrabold text-primary" />
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Attendance Section -->
-            <div class="divider text-[10px] uppercase tracking-widest text-base-content/30 font-bold my-2">Frequência</div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Hours Count Input with Quick Prefill Chips -->
-                <div class="form-control w-full">
-                    <label class="label px-0 pb-1.5">
-                        <span class="label-text font-bold text-xs text-base-content/70">Carga Horária (Aulas)</span>
-                    </label>
-                    <input id="cargaHoraria" type="number" min="0" max="500" step="1" placeholder="Ex.: 80" class="input input-bordered w-full font-bold rounded-xl text-sm" />
-                    <!-- Quick Prefills -->
-                    <div class="flex gap-2 mt-2">
-                        <button type="button" onclick="document.getElementById('cargaHoraria').value=40; document.getElementById('cargaHoraria').dispatchEvent(new Event('input'));" class="btn btn-xs btn-outline border-base-300 font-bold rounded-md px-2.5">40h</button>
-                        <button type="button" onclick="document.getElementById('cargaHoraria').value=80; document.getElementById('cargaHoraria').dispatchEvent(new Event('input'));" class="btn btn-xs btn-outline border-base-300 font-bold rounded-md px-2.5">80h</button>
-                        <button type="button" onclick="document.getElementById('cargaHoraria').value=120; document.getElementById('cargaHoraria').dispatchEvent(new Event('input'));" class="btn btn-xs btn-outline border-base-300 font-bold rounded-md px-2.5">120h</button>
+            <div>
+                <div class="tiny-label mb-3">Frequência</div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div class="form-control w-full">
+                        <label class="label px-0 pb-1.5" for="cargaHoraria"><span class="label-text">Carga horária (aulas)</span></label>
+                        <input id="cargaHoraria" type="number" min="0" max="500" step="1" placeholder="Ex.: 80" class="input w-full font-bold" />
+                        <div class="flex gap-2 mt-2">
+                            {% for h in (40, 80, 120) %}
+                            <button type="button" onclick="document.getElementById('cargaHoraria').value={{ h }}; document.getElementById('cargaHoraria').dispatchEvent(new Event('input'));" class="btn btn-xs btn-outline">{{ h }}h</button>
+                            {% endfor %}
+                        </div>
                     </div>
-                </div>
-
-                <!-- Absences Slider -->
-                <div class="form-control w-full">
-                    <label class="label px-0 pb-1.5">
-                        <span class="label-text font-bold text-xs text-base-content/70">Quantidade de Faltas</span>
-                    </label>
-                    <div class="flex items-center gap-3 w-full">
-                        <input id="faltas" type="range" min="0" max="40" step="1" value="0" class="glass-range flex-1" />
-                        <input id="faltas-val" type="number" min="0" max="40" step="1" value="0" class="input input-bordered input-sm w-16 text-center font-extrabold text-warning bg-base-100 rounded-lg border-base-300 focus:border-warning/50" />
+                    <div class="form-control w-full">
+                        <label class="label px-0 pb-1.5" for="faltas-val"><span class="label-text">Quantidade de faltas</span></label>
+                        <div class="flex items-center gap-3 w-full">
+                            <input id="faltas" type="range" min="0" max="40" step="1" value="0" class="glass-range flex-1" />
+                            <input id="faltas-val" type="number" min="0" max="40" step="1" value="0" class="input input-sm w-16 text-center font-extrabold text-warning" />
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Hidden Inputs for logic compatibility -->
             <input id="limiteFaltas" type="hidden" />
         </form>
-    </div>
+    </section>
 
-    <!-- Right Column: Real-time Live Outcome Dashboard -->
-    <div class="card glass-card border border-base-300/40 p-6 bg-base-100 shadow-2xl">
-        <h2 class="font-extrabold text-lg text-base-content mb-6">Previsão Acadêmica</h2>
+    <!-- Live verdict -->
+    <section class="card p-6 lg:sticky lg:top-24">
+        <h2 class="section-title mb-5">Resultado</h2>
         <p id="resultadoHint" class="hidden"></p>
 
-        <!-- Skeleton Results Loader -->
         <div id="simuladorResultadoLoading" class="space-y-4 hidden">
-            <span class="skeleton h-24 w-full block rounded-lg"></span>
-            <span class="skeleton h-14 w-full block rounded-lg"></span>
-            <div class="grid grid-cols-2 gap-4">
-                <span class="skeleton h-16 w-full block rounded-lg"></span>
-                <span class="skeleton h-16 w-full block rounded-lg"></span>
-            </div>
+            <span class="skeleton h-24 w-full block"></span>
+            <span class="skeleton h-14 w-full block"></span>
         </div>
 
         <div id="simuladorResultadoContent">
-            <div id="resultados" class="space-y-6 hidden">
-                <!-- Large Status / Average Panel -->
-                <div class="stats stats-vertical bg-base-200/50 w-full rounded-2xl border border-base-300/30 overflow-hidden shadow-inner">
-                    <div class="stat py-5 px-6 flex items-center justify-between">
-                        <div>
-                            <div class="stat-title text-[10px] uppercase font-black tracking-wider text-base-content/40 mb-1">Média Parcial</div>
-                            <div id="mediaParcial" class="stat-value text-primary font-black text-4xl leading-none">0.0</div>
-                        </div>
-                        <!-- Outcome Ring Indicator -->
-                        <div id="outcome-ring" class="w-12 h-12 rounded-full border-4 border-base-300 flex items-center justify-center font-black text-sm">
-                            -
-                        </div>
+            <div id="resultados" class="space-y-4 hidden" data-outcome="">
+                <div class="verdict">
+                    <div class="min-w-0">
+                        <div class="tiny-label mb-1">Média parcial</div>
+                        <div id="mediaParcial" class="verdict-media">0.0</div>
+                        <div id="situacaoAtual" class="mt-3">-</div>
                     </div>
-                    <div class="stat py-4 px-6 border-t border-base-300/30 bg-base-200/30">
-                        <div class="stat-title text-[10px] uppercase font-black tracking-wider text-base-content/40 mb-1">Situação</div>
-                        <div id="situacaoAtual" class="stat-desc text-base font-extrabold text-base-content">-</div>
+                    <div id="outcome-ring" class="w-12 h-12 rounded-full border-4 border-base-300 flex items-center justify-center font-black text-sm shrink-0">-</div>
+                </div>
+
+                <div id="necessidadeFinal" class="alert bg-warning/12 border-warning/30 text-warning hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                    </svg>
+                    <div>
+                        <h4 class="font-extrabold text-sm leading-none mb-1">Prova final necessária</h4>
+                        <div id="possibilidadesFinais" class="text-xs font-semibold leading-relaxed"></div>
                     </div>
                 </div>
 
-                <!-- Final Exam Requirement Alert banner -->
-                <div id="necessidadeFinal" class="alert bg-warning/15 border border-warning/30 text-warning rounded-2xl p-4 hidden">
-                    <div class="flex items-start gap-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 mt-0.5 text-warning" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                        </svg>
-                        <div>
-                            <h4 class="font-extrabold text-sm text-warning leading-none mb-1">Prova Final Necessária</h4>
-                            <div id="possibilidadesFinais" class="text-xs font-semibold leading-relaxed text-warning/85 mt-1"></div>
-                        </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="chip-stat p-4">
+                        <div class="tiny-label mb-1">Frequência</div>
+                        <div id="frequenciaAtual" class="font-display font-extrabold text-2xl leading-none">100%</div>
+                        <progress id="freq-progress" class="progress progress-success mt-3" style="height:.3rem" value="100" max="100"></progress>
+                    </div>
+                    <div class="chip-stat p-4">
+                        <div class="tiny-label mb-1">Ainda pode faltar</div>
+                        <div id="podeFaltar" class="font-display font-extrabold text-2xl leading-none">-</div>
                     </div>
                 </div>
 
-                <!-- Circular Absences Gauge Details -->
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-base-200/40 border border-base-300/30 rounded-2xl p-4 shadow-sm flex flex-col justify-between">
-                        <div>
-                            <p class="text-[10px] font-black uppercase tracking-wider text-base-content/40 mb-1">Frequência</p>
-                            <p id="frequenciaAtual" class="font-extrabold text-xl text-base-content leading-none mt-1">100%</p>
-                        </div>
-                        <!-- Micro bar -->
-                        <progress id="freq-progress" class="progress progress-success w-full h-1 mt-3" value="100" max="100"></progress>
-                    </div>
-                    <div class="bg-base-200/40 border border-base-300/30 rounded-2xl p-4 shadow-sm flex flex-col justify-between">
-                        <div>
-                            <p class="text-[10px] font-black uppercase tracking-wider text-base-content/40 mb-1">Limite de Faltas</p>
-                            <p id="podeFaltar" class="font-extrabold text-xl text-base-content leading-none mt-1">-</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Status Legend -->
-                <div class="p-4 bg-base-200/35 border border-base-300/20 rounded-2xl shadow-sm">
-                    <div class="text-[10px] uppercase font-black tracking-widest text-base-content/40 mb-3">Legenda de Status</div>
-                    <div class="grid grid-cols-2 gap-3 text-xs font-semibold text-base-content/85">
-                        <div class="flex items-center gap-2">
-                            <span class="w-6 h-6 rounded-full border-2 bg-success/15 border-success text-success text-[10px] font-black flex items-center justify-center shrink-0">AP</span>
-                            <span>Aprovado</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="w-6 h-6 rounded-full border-2 bg-warning/15 border-warning text-warning text-[10px] font-black flex items-center justify-center shrink-0">PF</span>
-                            <span>Prova Final</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="w-6 h-6 rounded-full border-2 bg-error/15 border-error text-error text-[10px] font-black flex items-center justify-center shrink-0">RF</span>
-                            <span>Repr. por Faltas</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="w-6 h-6 rounded-full border-2 bg-error/15 border-error text-error text-[10px] font-black flex items-center justify-center shrink-0">RN</span>
-                            <span>Repr. por Nota</span>
-                        </div>
-                    </div>
-                </div>
+                <p class="text-[11px] font-semibold text-base-content/45 leading-relaxed">
+                    <b class="text-success">AP</b> aprovado · <b class="text-warning">PF</b> prova final ·
+                    <b class="text-error">RF</b> reprovado por faltas · <b class="text-error">RN</b> reprovado por nota
+                </p>
             </div>
         </div>
-    </div>
+    </section>
 </div>
 {% endblock %}
 
