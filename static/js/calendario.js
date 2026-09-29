@@ -244,7 +244,7 @@
 
     async function init() {
         try {
-            const res = await fetch('/static/data/calendario.json');
+            const res = await fetch('/static/data/calendario.json', { cache: 'no-cache' });
             if (!res.ok) throw new Error('Erro ao carregar calendário');
             calData = await res.json();
             buildMaps(calData);

@@ -1,3 +1,4 @@
+import hashlib
 import os
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
@@ -26,8 +27,47 @@ async def suap_auth_error_handler(request: Request, exc: SUAPAuthError):
 
 app.add_middleware(SessionMiddleware, secret_key=os.getenv("SECRET_KEY", "uma-chave-secreta-padrao-aqui-123"))
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
+STATIC_DIR = "static"
+_asset_hashes: dict = {}
+
+
+def asset(path: str) -> str:
+    """URL de um arquivo estático com hash do conteúdo (?v=...).
+
+    Quando o arquivo muda, a URL muda e o navegador baixa a versão nova
+    em vez de reaproveitar a do cache.
+    """
+    full_path = os.path.join(STATIC_DIR, path)
+    try:
+        stat = os.stat(full_path)
+    except OSError:
+        return f"/static/{path}"
+
+    cached = _asset_hashes.get(path)
+    if cached is None or cached[0] != stat.st_mtime_ns:
+        with open(full_path, "rb") as f:
+            digest = hashlib.md5(f.read()).hexdigest()[:10]
+        cached = (stat.st_mtime_ns, digest)
+        _asset_hashes[path] = cached
+    return f"/static/{path}?v={cached[1]}"
+
+
+class CachedStaticFiles(StaticFiles):
+    """URLs versionadas (?v=) podem ficar em cache para sempre; as demais sempre revalidam."""
+
+    async def get_response(self, path, scope):
+        response = await super().get_response(path, scope)
+        if response.status_code == 200:
+            versioned = b"v=" in scope.get("query_string", b"")
+            response.headers["Cache-Control"] = (
+                "public, max-age=31536000, immutable" if versioned else "no-cache"
+            )
+        return response
+
+
+app.mount("/static", CachedStaticFiles(directory=STATIC_DIR), name="static")
 templates = Jinja2Templates(directory="templates")
+templates.env.globals["asset"] = asset
 
 def get_token(request: Request):
     """Pega o token salva na seção"""
